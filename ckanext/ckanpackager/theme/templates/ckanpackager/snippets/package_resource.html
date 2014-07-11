@@ -1,0 +1,14 @@
+{# Parameters:
+     res: Resource object;
+     pkg: Package object;
+     bt_class: Class for the button icon (eg. icon-download, icon-external-link, etc.)
+     bt_text: Text for the button (eg. _('Download'))
+#}
+
+{% resource 'ckanpackager/scripts/anon_email_form.js' %}
+{% resource 'ckanpackager/css/ckanpackager.css' %}
+
+<a class="packager-link btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}"
+   href="{{ h.url_for_package_resource(pkg.id, res.id) }}">
+  <i class="{{ bt_class }}"></i> {{ bt_text }}
+</a>

@@ -1,0 +1,22 @@
+div.ckanpackager-form {
+    background: #FFF;
+    border: 1px solid #AAA;
+    border-radius: 4px;
+    padding: 4px;
+    box-shadow: 2px 2px 4px 0px rgba(50, 50, 50, 0.5);
+}
+
+div.ckanpackager-tab{
+    background: transparent;
+    border: 1px solid #AAA;
+    border-radius: 4px 4px 0 0;
+    border-bottom: 1px solid #FFF;
+}
+
+div.ckanpackager-form a.btn {
+  margin-right: 16px;
+}
+
+div.ckanpackager-form input {
+    width: 95%;
+}

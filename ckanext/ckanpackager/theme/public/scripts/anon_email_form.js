@@ -80,27 +80,17 @@
         self.display();
       });
       $('.ckanpackager-tab', self.$form).on('mouseenter', function(){
-        console.log('enter tab');
         self.display();
       });
       $('.ckanpackager-form', self.$form).on('mouseenter', function(){
-        console.log('enter form');
         self.display();
       });
       $('.ckanpackager-tab', self.$form).on('mouseleave', function(){
-        console.log('leave tab');
         self._hide_me_timeout();
       });
       $('.ckanpackager-form', self.$form).on('mouseleave', function(){
-        console.log('leave form');
         self._hide_me_timeout();
       });
-//      self.$form.on('mouseenter', function(){
-//        self.display();
-//      });
-//      self.$form.on('mouseleave', function(){
-//        self._hide_me_timeout();
-//      });
       $('a.ckanpackager-cancel', self.$form).on('click', function(e){
         self.hide();
         e.stopPropagation();

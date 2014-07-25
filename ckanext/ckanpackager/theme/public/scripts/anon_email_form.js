@@ -77,6 +77,8 @@
         return false;
       });
       $link.on('mouseenter', function(){
+        // Update the link in case the URL was changed since the page was loaded!
+        self._update_send_link();
         self.display();
       });
       $('.ckanpackager-tab', self.$form).on('mouseenter', function(){
@@ -192,10 +194,19 @@
      */
     self._update_send_link = function(){
       var send_url = self.link_parts['path'];
+      // Update email
       if (self.is_anon){
         self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];
       }
-      var cat = []
+      // Update filters
+      var filters = parseurl(window.parent.location.href);
+      if (filters['qs']['filters']){
+        self.link_parts['qs']['filters'] = filters['qs']['filters'];
+      } else {
+        delete self.link_parts['qs']['filters'];
+      }
+      // Build URL
+      var cat = [];
       for (var i in self.link_parts['qs']){
         for (var j in self.link_parts['qs'][i]) {
           cat.push(String(i) + "=" + String(self.link_parts['qs'][i][j]))
@@ -204,6 +215,7 @@
       if (cat.length > 0) {
         send_url = send_url + '?' + cat.join('&');
       }
+      // Set URL
       $('a.ckanpackager-send', self.$form).attr('href', send_url);
     };
 

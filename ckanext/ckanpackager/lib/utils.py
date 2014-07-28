@@ -18,7 +18,7 @@ def is_datastore_resource(resource_id):
     return resource.get('datastore_active', False)
 
 
-def url_for_package_resource(package_id, resource_id, anon=True, use_request=True):
+def url_for_package_resource(package_id, resource_id, anon=True, use_request=True, extra_filters={}):
     """Given a resource_id, return the URL for packaging that resource
 
     @package_id: The package id
@@ -36,6 +36,14 @@ def url_for_package_resource(package_id, resource_id, anon=True, use_request=Tru
         get = dict(t.request.GET)
     else:
         get = {}
+
+    extra_filters = '|'.join(['%s:%s' % (k, v) for k, v in extra_filters.items()])
+
+    try:
+        get['filters'] += '"%s' % extra_filters
+    except KeyError:
+        get['filters'] = extra_filters
+
     get['resource_id'] = resource_id
     get['package_id'] = package_id
     get['destination'] = t.request.url

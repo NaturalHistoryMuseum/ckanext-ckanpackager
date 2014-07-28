@@ -5,10 +5,9 @@
      bt_text: Text for the button (eg. _('Download'))
 #}
 
-{% resource 'ckanpackager/scripts/anon_email_form.js' %}
-{% resource 'ckanpackager/css/ckanpackager.css' %}
+{% resource 'ckanext-ckanpackager/main' %}
 
-<a class="packager-link btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}"
+<a data-module="ckanpackager-download-link" class="packager-link btn btn-primary resource-url-analytics resource-type-{{ res.resource_type }}"
    href="{{ h.url_for_package_resource(pkg.id, res.id) }}">
   <i class="{{ bt_class }}"></i> {{ bt_text }}
 </a>

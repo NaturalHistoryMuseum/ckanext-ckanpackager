@@ -46,4 +46,4 @@ class CkanPackagerPlugin(p.SingletonPlugin):
         """
         p.toolkit.add_template_directory(app_config, 'theme/templates')
         p.toolkit.add_public_directory(config, 'theme/public')
-        p.toolkit.add_resource('theme/public', 'ckanpackager')
+        p.toolkit.add_resource('theme/public', 'ckanext-ckanpackager')

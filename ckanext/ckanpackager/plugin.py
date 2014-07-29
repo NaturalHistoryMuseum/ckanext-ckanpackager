@@ -35,8 +35,8 @@ class CkanPackagerPlugin(p.SingletonPlugin):
 
         Add our custom download action"""
         map_route.connect('package_resource', '/dataset/{package_id}/resource/{resource_id}/package',
-                    controller='ckanext.ckanpackager.controllers.packager:CkanPackagerController',
-                    action='package_resource')
+                          controller='ckanext.ckanpackager.controllers.packager:CkanPackagerController',
+                          action='package_resource')
         return map_route
 
     def update_config(self, app_config):

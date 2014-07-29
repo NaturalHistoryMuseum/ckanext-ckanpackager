@@ -44,9 +44,17 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       self.out_timeout = null;
 
       var url = self.el.attr('href');
-      console.log(self.options.anon_message);
+      if (!url || url === '#'){
+        // Disable the button.
+        self.el.addClass('disabled');
+        self.el.on('click', function(e){
+          e.stopPropagation();
+          return false;
+        });
+        return;
+      }
 
-      self.link_parts = parseurl(url)
+      self.link_parts = parseurl(url);
       self.is_anon = (typeof(self.link_parts['qs']['anon']) !== 'undefined');
 
       if (typeof(self.link_parts['qs']['anon']) !== 'undefined'){
@@ -196,10 +204,10 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       if (self.is_anon){
         self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];
       }
-      var cat = []
+      var cat = [];
       for (var i in self.link_parts['qs']){
         for (var j in self.link_parts['qs'][i]) {
-          cat.push(String(i) + "=" + String(self.link_parts['qs'][i][j]))
+          cat.push(String(i) + "=" + String(self.link_parts['qs'][i][j]));
         }
       }
       if (cat.length > 0) {
@@ -243,24 +251,24 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
    * not url decoded.
    */
   function parseurl(url){
-    var parts = url.split('?')
+    var parts = url.split('?');
     if (parts.length == 1) {
       return {
         path: parts[0],
         qs: {}
       };
     }
-    var qs = {}
+    var qs = {};
     var qs_parts = parts[1].split('&');
     for (var i = 0; i < qs_parts.length; i++){
-      var v_parts = qs_parts[i].split('=')
+      var v_parts = qs_parts[i].split('=');
       var name = v_parts[0];
       var value = '';
       if (v_parts.length == 1){
         value = 1;
       } else {
         value = v_parts[1]
-      };
+      }
       if (qs[name]){
         qs.name.push(value);
       } else {

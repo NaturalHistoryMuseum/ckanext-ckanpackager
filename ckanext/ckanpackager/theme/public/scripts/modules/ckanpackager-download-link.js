@@ -16,7 +16,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         anon_message: 'The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.',
         overlay_width: 350,
         overlay_padding: 8,
-        tab_padding: 4,
+        page_container: '#content',
         template: [
             '<div>',
                 '<div class="ckanpackager-form">',
@@ -76,9 +76,14 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
 
       // Show & hide logic
      self.el.on('click', function(e){
+        self._update_send_link();
         self.display();
         e.stopPropagation();
         return false;
+      });
+
+     $('a.ckanpackager-send', self.$form).on('click', function(e){
+        self.hide();
       });
 
      $('a.ckanpackager-cancel', self.$form).on('click', function(e){
@@ -115,6 +120,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       self.$form.stop().fadeIn(100, function(){
         $('input.ckanpackager-email', self.$form).focus();
       });
+      self.el.addClass('packager-link-active');
     },
 
     /**
@@ -129,6 +135,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       }
       self.visible = false;
       self.$form.stop().fadeOut(100);
+      self.el.removeClass('packager-link-active');
     },
 
    /**
@@ -159,18 +166,10 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         background: 'transparent',
         top: String(position.top) + "px",
         left: String(position.left) + "px",
-        paddingTop: String(position.top_padding) + "px",
         width: String(self.options.overlay_width) + "px",
         zIndex: "101",
         display: "none"
       }).appendTo('body');
-      var tab = $('<div class="ckanpackager-tab"></div>').css({
-        top: String(self.options.overlay_padding - self.options.tab_padding) + "px",
-        left: String(position.left_offset - self.options.tab_padding) + "px",
-        width: String(link_size.width + 2 * self.options.tab_padding - 2) + "px",
-        height: String(position.top_padding - self.options.overlay_padding + self.options.tab_padding - 1) + "px",
-        position: 'absolute'
-      }).appendTo($form);
       return $form;
     },
 
@@ -185,13 +184,31 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         width: self.el.outerWidth(),
         height: self.el.outerHeight()
       };
-      var left_offset = self.options.overlay_width / 2 + self.options.overlay_padding - link_size.width / 2;
-      return {
-        top: link_offset.top - self.options.overlay_padding,
+
+      var left_offset = self.options.overlay_width / 2 - link_size.width / 2;
+      var position = {
+        top: link_offset.top + link_size.height + 8,
         left: link_offset.left - left_offset,
         left_offset: left_offset,
         top_padding: link_size.height + 2 * self.options.overlay_padding
+      };
+      if (self.options.page_container && $(self.options.page_container).length > 0){
+        // If we can't fit centered, align it to the right of the page, or to the right
+        // of the download button if that is less than 32px away.
+        var $container = $(self.options.page_container);
+        var container_right = $container.offset().left + $container.width();
+        if (position.left + self.options.overlay_width > container_right){
+          var new_left = container_right - self.options.overlay_width;
+          if (new_left + self.options.overlay_width - link_offset.left - link_size.width < 32){
+            position.left = link_offset.left + link_size.width - self.options.overlay_width;
+            position.left_offset = -link_size.width;
+          } else {
+            position.left_offset = position.left_offset + position.left - new_left;
+            position.left = new_left;
+          }
+        }
       }
+      return position;
     },
 
     /**

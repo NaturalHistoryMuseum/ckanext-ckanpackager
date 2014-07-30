@@ -1,16 +1,14 @@
 div.ckanpackager-form {
-    background: #FFF;
-    border: 1px solid #AAA;
-    border-radius: 4px;
+    background: #EBEBEB;
     padding: 4px;
-    box-shadow: 2px 2px 4px 0px rgba(50, 50, 50, 0.5);
+}
+
+.ckanpackager-align-right div.ckanpackager-form {
+    border-radius: 4px 0px 4px 4px;
 }
 
 div.ckanpackager-tab{
     background: transparent;
-    border: 1px solid #AAA;
-    border-radius: 4px 4px 0 0;
-    border-bottom: 1px solid #FFF;
 }
 
 div.ckanpackager-form a.btn {
@@ -19,4 +17,21 @@ div.ckanpackager-form a.btn {
 
 div.ckanpackager-form input {
     width: 95%;
+}
+
+a.packager-link {
+    display: block;
+}
+
+a.packager-link.packager-link-active,
+a.packager-link.packager-link-active:hover {
+    background-color: #EBEBEB;
+    color: #000;
+    cursor: default;
+    display: block;
+    height: 28px;
+}
+
+.actions li {
+    vertical-align: top;
 }

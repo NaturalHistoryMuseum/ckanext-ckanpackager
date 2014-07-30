@@ -217,6 +217,13 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      * Update the 'send' link (eg. when email is typed)
      */
     _update_send_link: function(){
+      // Some plugin will change URL without page reload, so ensure we get latest destination & filters
+      var window_link_parts = parseurl(window.location.href);
+      self.link_parts['qs']['destination'] = [encodeURIComponent(window.location.href)];
+      if (window_link_parts['qs']['filters']){
+        self.link_parts['qs']['filters'] = window_link_parts['qs']['filters'];
+      }
+
       var send_url = self.link_parts['path'];
       if (self.is_anon){
         self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];

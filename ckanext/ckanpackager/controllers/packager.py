@@ -86,7 +86,10 @@ class CkanPackagerController(t.BaseController):
 
         resource = t.get_action('resource_show')(None, {'id': resource_id})
         if resource.get('datastore_active', False):
-            packager_url += '/package_datastore'
+            if resource.get('format', '').lower() == 'dwc':
+                packager_url += '/package_dwc_archive'
+            else:
+                packager_url += '/package_datastore'
             request_params['api_url'] = config['datastore_api'] + '/datastore_search'
             for option in ['filters', 'q', 'limit', 'offset', 'resource_url']:
                 if option in params:

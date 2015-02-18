@@ -97,6 +97,15 @@ class CkanPackagerController(t.BaseController):
                         request_params['filters'] = json.dumps(self._parse_filters(params['filters']))
                     else:
                         request_params[option] = params[option]
+            if 'limit' not in request_params:
+                # It's best to actually add a limit, so the packager knows how to prioritize the request.
+                prep_req = dict(request_params)
+                prep_req['limit'] = 1 # Using 0 does not return the total
+                del prep_req['secret']
+                del prep_req['email']
+                del prep_req['api_url']
+                result = t.get_action('datastore_search')({}, prep_req)
+                request_params['limit'] = result['total'] - request_params.get('offset', 0)
         elif resource.get('url', False):
             packager_url += '/package_url'
             request_params['resource_url'] = resource.get('url')

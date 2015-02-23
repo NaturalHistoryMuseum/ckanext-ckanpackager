@@ -44,8 +44,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       self.out_timeout = null;
       self.offset = null;
       self.limit = null;
-      self.total = null;
-      self.download_mode = 'all';
+      self.sort = null;
 
       var url = self.el.attr('href');
       if (!url || url === '#'){
@@ -185,23 +184,37 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      *
      * Update the form and the action link with run time data (eg. current
      * page/number of rows)
+     *
+     * Obtaining current page/number of rows depends on this patch:
+     * https://github.com/NaturalHistoryMuseum/ckanext-nhm/blob/2b462796b3a12590b7e8146c473ce9b13a4031d1/ckanext/nhm/patches/79-reclinegrid-make-grid-object-avaiable.patch
+     *
+     * If not present, nothing will happen.
      */
     _update_form_and_link: function() {
       var size_input_html = '';
       self.offset = null;
       self.limit = null;
-      self.total = null;
-      self.download_mode = 'all';
-      // See if we have a grid with records & page
-      var $controls = $('iframe').contents().find('div[data-module*=recline_view] div.controls');
-      if ($controls.length > 0){
-        var total = parseInt($controls.find('div.recline-record-count span.count').html());
-        var to = parseInt($controls.find('input[name=to]').val());
-        var from = parseInt($controls.find('input[name=from]').val());
-        if (!isNaN(total) && !isNaN(from) && !isNaN(to)){
+      self.sort = null;
+      // See if we have a grid with records & page. Note that the view plugin
+      // reloads the grid, so we have to query the grid object every time.
+      var $iframe = $('iframe').contents();
+      var $grid = $('div.recline-slickgrid', $iframe);
+      var $controls = $('div[data-module*=recline_view] div.controls', $iframe);
+      var $from = $('input[name=from]', $controls);
+      var $total = $('div.recline-record-count span.count', $controls);
+      if ($grid.length == 1 && $grid.get(0).grid && $from.length == 1 && $total.length == 1){
+        var grid = $grid.get(0).grid;
+        var total = parseInt($total.html());
+        var from = parseInt($from.val());
+        var count = grid.getDataLength();
+        var sort = [];
+        $.each(grid.getSortColumns(), function(i, c) {
+          sort.push(c.columnId + (c.sortAsc ? ' ASC' : ' DESC'));
+        });
+        if (!isNaN(from) && !isNaN(count) && !isNaN(total)){
           self.offset = from - 1;
-          self.limit = to - from + 1;
-          self.total = total;
+          self.limit = count;
+          self.sort = sort.join(',');
           size_input_html = self.options['download_size_input'].replace('{total}', total.toLocaleString())
         }
       }
@@ -262,13 +275,17 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       if (window_link_parts['qs']['filters']){
         self.link_parts['qs']['filters'] = window_link_parts['qs']['filters'];
       }
-      // Add offset/limit if needed
+      // Add offset/limit/sort if needed
       delete self.link_parts['qs']['offset'];
       delete self.link_parts['qs']['limit'];
+      delete self.link_parts['qs']['sort'];
       if (self.offset !== null && self.limit !== null){
         if (self.$form.find('input[name=content]:checked').val() == 'page'){
           self.link_parts['qs']['offset'] = [self.offset];
           self.link_parts['qs']['limit'] = [self.limit];
+          if (self.sort){
+            self.link_parts['qs']['sort'] = [self.sort];
+          }
         }
       }
       var send_url = self.link_parts['path'];

@@ -19,6 +19,26 @@ div.ckanpackager-form input {
     width: 95%;
 }
 
+div.ckanpackager-form div.options {
+    text-align: left;
+    vertical-align: middle;
+}
+
+div.ckanpackager-form div.options label {
+    vertical-align:middle;
+    font-weight: normal;
+    display: inline-block;
+}
+
+div.ckanpackager-form div.options label:after {
+    content: "";
+}
+
+div.ckanpackager-form div.options input {
+    width: auto;
+    position: initial;
+}
+
 a.packager-link {
     display: block;
 }

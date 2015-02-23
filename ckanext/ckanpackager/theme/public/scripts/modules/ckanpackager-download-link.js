@@ -21,11 +21,14 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
             '<div>',
                 '<div class="ckanpackager-form">',
                     '<p></p>',
+                    '<div class="options"></div>',
                     '<a class="ckanpackager-send btn btn-primary" href="#">Send</a>',
                     '<a class="ckanpackager-cancel btn btn-warning" href="#">Cancel</a>',
                 '</div>',
             '</div>'
-          ].join('\n')
+          ].join('\n'),
+      download_size_input: 'Download <label for="page"><input type="radio" name="content" value="page" checked="checked"/> this page only</label>'
+          + ' <label for="all"><input type="radio" name="content" value="all"/> all {total} records <span></span></label>'
     },
 
     /* Sets up event listeners
@@ -33,15 +36,16 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      * Returns nothing.
      */
     initialize: function () {
-
-
-
       jQuery.proxyAll(this, /_on/);
       self = this;
 
       // Setup
       self.visible = false;
       self.out_timeout = null;
+      self.offset = null;
+      self.limit = null;
+      self.total = null;
+      self.download_mode = 'all';
 
       var url = self.el.attr('href');
       if (!url || url === '#'){
@@ -111,6 +115,9 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         return false;
       }
       self.visible = true;
+      // Update form with run time data
+      self._update_form_and_link();
+
       // Update position, in case there has been some movement (eg. removed flash alerts)
       var position = self._get_form_position();
       self.$form.css({
@@ -174,6 +181,38 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
     },
 
     /**
+     * _update_form_and_link
+     *
+     * Update the form and the action link with run time data (eg. current
+     * page/number of rows)
+     */
+    _update_form_and_link: function() {
+      var size_input_html = '';
+      self.offset = null;
+      self.limit = null;
+      self.total = null;
+      self.download_mode = 'all';
+      // See if we have a grid with records & page
+      var $controls = $('iframe').contents().find('div[data-module*=recline_view] div.controls');
+      if ($controls.length > 0){
+        var total = parseInt($controls.find('div.recline-record-count span.count').html());
+        var to = parseInt($controls.find('input[name=to]').val());
+        var from = parseInt($controls.find('input[name=from]').val());
+        if (!isNaN(total) && !isNaN(from) && !isNaN(to)){
+          self.offset = from - 1;
+          self.limit = to - from + 1;
+          self.total = total;
+          size_input_html = self.options['download_size_input'].replace('{total}', total.toLocaleString())
+        }
+      }
+      self.$form.find('div.options').html(size_input_html);
+      self.$form.find('div.options input').change(function(){
+          self._update_send_link();
+      });
+      self._update_send_link();
+    },
+
+    /**
      * _get_form_position
      *
      * Return the form position (based on the link's position)
@@ -223,7 +262,15 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       if (window_link_parts['qs']['filters']){
         self.link_parts['qs']['filters'] = window_link_parts['qs']['filters'];
       }
-
+      // Add offset/limit if needed
+      delete self.link_parts['qs']['offset'];
+      delete self.link_parts['qs']['limit'];
+      if (self.offset !== null && self.limit !== null){
+        if (self.$form.find('input[name=content]:checked').val() == 'page'){
+          self.link_parts['qs']['offset'] = [self.offset];
+          self.link_parts['qs']['limit'] = [self.limit];
+        }
+      }
       var send_url = self.link_parts['path'];
       if (self.is_anon){
         self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];

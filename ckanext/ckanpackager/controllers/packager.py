@@ -107,7 +107,17 @@ class CkanPackagerController(t.BaseController):
                     prep_req['filters'] = request_params['filters']
                 if 'q' in request_params:
                     prep_req['q'] = request_params['q']
-                result = t.get_action('datastore_search')({}, prep_req)
+
+                # BUGFIX: BS timeout on download request
+                # Try and use the solr search if it exists
+                try:
+                    search_action = t.get_action('datastore_solr_search')
+                # Otherwise fallback to default
+                except KeyError:
+                    search_action = t.get_action('datastore_search')
+
+                result = search_action({}, prep_req)
+
                 request_params['limit'] = result['total'] - request_params.get('offset', 0)
         elif resource.get('url', False):
             packager_url += '/package_url'

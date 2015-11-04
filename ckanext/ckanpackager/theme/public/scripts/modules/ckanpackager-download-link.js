@@ -8,7 +8,6 @@
 this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
 
   var self;
-
   return {
 
     options: {
@@ -80,7 +79,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       // Show & hide logic
      self.el.on('click', function(e){
         self._update_send_link();
-        self.display();
+        self.display($(this));
         e.stopPropagation();
         return false;
       });
@@ -108,7 +107,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      *
      * Display the form
      */
-    display: function(){
+    display: function(el){
       self._clear_timeout();
       if (self.visible){
         return false;
@@ -118,7 +117,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       self._update_form_and_link();
 
       // Update position, in case there has been some movement (eg. removed flash alerts)
-      var position = self._get_form_position();
+      var position = self._get_form_position(el);
       self.$form.css({
         top: String(position.top) + "px",
         left: String(position.left) + "px"
@@ -126,7 +125,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       self.$form.stop().fadeIn(100, function(){
         $('input.ckanpackager-email', self.$form).focus();
       });
-      self.el.addClass('packager-link-active');
+      el.addClass('packager-link-active');
     },
 
     /**
@@ -141,7 +140,8 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       }
       self.visible = false;
       self.$form.stop().fadeOut(100);
-      self.el.removeClass('packager-link-active');
+
+      $('.packager-link-active').removeClass('packager-link-active');
     },
 
    /**
@@ -150,7 +150,6 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      * Create the form, add it the body (hidden) and return the jQuery object.
      */
     _make_form: function() {
-      var position = self._get_form_position();
       var link_size = {
         width: self.el.outerWidth(),
         height: self.el.outerHeight()
@@ -170,8 +169,6 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       var $form = $tpl.css({
         position: 'absolute',
         background: 'transparent',
-        top: String(position.top) + "px",
-        left: String(position.left) + "px",
         width: String(self.options.overlay_width) + "px",
         zIndex: "101",
         display: "none"
@@ -230,11 +227,11 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      *
      * Return the form position (based on the link's position)
      */
-    _get_form_position: function(){
-      var link_offset = self.el.offset();
+    _get_form_position: function(el){
+      var link_offset = el.offset();
       var link_size = {
-        width: self.el.outerWidth(),
-        height: self.el.outerHeight()
+        width: el.outerWidth(),
+        height: el.outerHeight()
       };
 
       var left_offset = self.options.overlay_width / 2 - link_size.width / 2;

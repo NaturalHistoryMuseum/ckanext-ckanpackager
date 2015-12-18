@@ -79,7 +79,8 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       // Show & hide logic
      self.el.on('click', function(e){
         // BUGFIX: Update links parts with the url of the clicked link
-        //self.link_parts = parseurl($(this).attr('href'));
+        self.link_parts = parseurl($(this).attr('href'));
+        console.log(self.link_parts);
         self._update_send_link();
         self.display($(this));
         e.stopPropagation();

@@ -7,7 +7,14 @@
 
 {% resource 'ckanext-ckanpackager/main' %}
 
-<a data-module="ckanpackager-download-link" class="packager-link btn btn-primary"
-   href="{{ h.url_for_package_resource(pkg.id, res.id) }}">
-  <i class="{{ bt_class }}"></i> {{ bt_text }}
-</a>
+{% if res.datastore_active %}
+    <a data-module="ckanpackager-download-link" class="packager-link btn btn-primary"
+       href="{{ h.url_for_package_resource(pkg.id, res.id) }}">
+      <i class="{{ bt_class }}"></i> {{ bt_text }}
+    </a>
+{% else %}
+    <a class="packager-link btn btn-primary"
+       href="{{ res.url }}">
+      <i class="{{ bt_class }}"></i> {{ bt_text }}
+    </a>
+{% endif %}

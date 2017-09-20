@@ -3,8 +3,10 @@ import urllib
 import urllib2
 import ckan.plugins.toolkit as t
 from ckan.lib.helpers import flash_error, flash_success
+import ckan.model as model
 from ckanext.ckanpackager.plugin import config
 from ckanext.ckanpackager.lib.utils import is_downloadable_resource, url_for_resource_page, redirect_to
+from ckanext.ckanpackager.model.stat import CKANPackagerStat
 
 _ = t._
 
@@ -61,6 +63,9 @@ class CkanPackagerController(t.BaseController):
                 email = t.request.params['email']
 
             (packager_url, request_params) = self._prepare_packager_parameters(email, resource_id, t.request.params)
+
+            print(request_params)
+
             result = self._send_packager_request(packager_url, request_params)
             if 'message' in result:
                 flash_success(result['message'])
@@ -68,6 +73,15 @@ class CkanPackagerController(t.BaseController):
                 flash_success(_("Request successfully posted. The resource should be emailed to you shortly"))
         except PackagerControllerError as e:
             flash_error(e.message)
+        else:
+            # Create new download object
+            stat = CKANPackagerStat(
+                resource_id=request_params['resource_id'],
+                count=request_params['limit'],
+            )
+            model.Session.add(stat)
+            model.Session.commit()
+
         redirect_to(self.destination)
 
     def _prepare_packager_parameters(self, email, resource_id, params):

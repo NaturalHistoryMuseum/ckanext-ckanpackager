@@ -41,3 +41,6 @@ Configuration
 - `ckanpackager.secret`: The shared secret
 
 TODO: Add a configuration item to enable/disable anonymous downloading.
+
+
+COPY ckanpackager_stats(resource_id,count,inserted_on) FROM '/usr/lib/ke2sql/src/data.csv' DELIMITER ',' CSV HEADER;

@@ -6,11 +6,14 @@ setup(
 	name='ckanext-ckanpackager',
 	version=version,
 	description="CKAN extension to provide resource downloads using ckanpackager",
-    url='https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager',
+	url='https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager',
 	packages=find_packages(),
 	namespace_packages=['ckanext', 'ckanext.ckanpackager'],
 	entry_points="""
-        [ckan.plugins]
-            ckanpackager = ckanext.ckanpackager.plugin:CkanPackagerPlugin
+	[ckan.plugins]
+	ckanpackager = ckanext.ckanpackager.plugin:CkanPackagerPlugin
+	[paste.paster_command]
+	ckanpackager-initdb=ckanext.ckanpackager.commands.initdb:CKANPackagerCommand
 	""",
 )
+

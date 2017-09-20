@@ -13,7 +13,7 @@ setup(
 	[ckan.plugins]
 	ckanpackager = ckanext.ckanpackager.plugin:CkanPackagerPlugin
 	[paste.paster_command]
-	ckanpackager-initdb=ckanext.ckanpackager.commands.initdb:CKANPackagerCommand
+	initdb=ckanext.ckanpackager.commands.initdb:CKANPackagerCommand
 	""",
 )
 

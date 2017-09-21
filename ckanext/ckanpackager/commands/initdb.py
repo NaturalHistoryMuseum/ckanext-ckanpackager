@@ -15,7 +15,7 @@ class CKANPackagerCommand(CkanCommand):
     """
     Create stats from GBIF
 
-    paster ckanpackager-initdb -c /etc/ckan/default/development.ini
+    paster --plugin=ckanext-ckanpackager initdb -c /etc/ckan/default/development.ini
 
     """
 

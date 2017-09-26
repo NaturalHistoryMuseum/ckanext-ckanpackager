@@ -64,8 +64,6 @@ class CkanPackagerController(t.BaseController):
 
             (packager_url, request_params) = self._prepare_packager_parameters(email, resource_id, t.request.params)
 
-            print(request_params)
-
             result = self._send_packager_request(packager_url, request_params)
             if 'message' in result:
                 flash_success(result['message'])
@@ -77,7 +75,7 @@ class CkanPackagerController(t.BaseController):
             # Create new download object
             stat = CKANPackagerStat(
                 resource_id=request_params['resource_id'],
-                count=request_params['limit'],
+                count=request_params.get('limit', 0),
             )
             model.Session.add(stat)
             model.Session.commit()

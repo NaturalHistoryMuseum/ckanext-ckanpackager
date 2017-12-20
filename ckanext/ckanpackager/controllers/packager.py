@@ -96,6 +96,12 @@ class CkanPackagerController(t.BaseController):
             'email': email
         }
 
+        # if there is a logged in user, send over their apikey so that the
+        # packager can access resources that require authentication (i.e. ones
+        # in private datasets)
+        if t.c.userobj and t.c.userobj.apikey:
+            request_params['key'] = t.c.userobj.apikey
+
         resource = t.get_action('resource_show')(None, {'id': resource_id})
         if resource.get('datastore_active', False):
             if resource.get('format', '').lower() == 'dwc':

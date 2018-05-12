@@ -11,33 +11,61 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
   return {
 
     options: {
-        auth_message: 'The resource will be extracted, with current filters applied, and an email will be sent to your registered address shortly.',
-        anon_message: 'The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.',
         overlay_width: 350,
         overlay_padding: 8,
-        page_container: '#content',
-        template: [
-            '<div>',
-                '<div class="ckanpackager-form">',
-                    '<p></p>',
-                    '<div class="options"></div>',
-                    '<a class="ckanpackager-send btn btn-primary" href="#">Send</a>',
-                    '<a class="ckanpackager-cancel btn btn-warning" href="#">Cancel</a>',
-                '</div>',
-            '</div>'
-          ].join('\n'),
-      download_size_input: 'Download <label for="page"><input type="radio" name="content" value="page" checked="checked"/> this page only</label>'
-          + ' <label for="all"><input type="radio" name="content" value="all"/> all {total} records <span></span></label>'
+        page_container: '#content'
     },
 
-    /* Sets up event listeners
-     *
-     * Returns nothing.
+    /**
+     * Initialises jQuery and requests the template snippet.
      */
     initialize: function () {
       jQuery.proxyAll(this, /_on/);
       self = this;
+      // disable the button for now, we'll enable it once we get the template from the server
+      self.disableButton();
+      // request the template from the server, this is async
+      self.sandbox.client.getTemplate('ckanpackager_form.html', self._onReceiveSnippet);
+    },
 
+    /**
+     * Disables the download button by preventing anything occurring when it is clicked and giving
+     * it the `disabled` CSS class.
+     */
+    disableButton: function() {
+      // Disable the button.
+      self.el.addClass('disabled');
+      // when clicked, prevent propagation so that the link isn't followed
+      self.el.on('click', function(e) {
+        e.stopPropagation();
+        return false;
+      });
+    },
+
+    /**
+     * Enables the download button.
+     */
+    enableButton: function() {
+      self.el.removeClass('disabled');
+      self.el.on('click', function(e) {
+        // TODO: Bugfix, update links parts with the url of the clicked link
+        self.link_parts = parseurl($(this).attr('href'));
+        if (typeof(self.link_parts['qs']['anon']) !== 'undefined') {
+            delete self.link_parts['qs']['anon'];
+        }
+        self._update_send_link();
+        self.display($(this));
+        e.stopPropagation();
+        return false;
+      });
+    },
+
+    /**
+     * Callback that is called when the template snippet is loaded from the server.
+     * @param html  the template's html
+     * @private
+     */
+    _onReceiveSnippet: function(html) {
       // Setup
       self.visible = false;
       self.out_timeout = null;
@@ -47,12 +75,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
 
       var url = self.el.attr('href');
       if (!url || url === '#'){
-        // Disable the button.
-        self.el.addClass('disabled');
-        self.el.on('click', function(e){
-          e.stopPropagation();
-          return false;
-        });
+        self.disableButton();
         return;
       }
 
@@ -64,7 +87,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       }
 
       // Prepare object
-      self.$form = self._make_form();
+      self.$form = self._make_form(html);
 
       // Setup the send action
       self._update_send_link();
@@ -76,18 +99,8 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         });
       }
 
-      // Show & hide logic
-     self.el.on('click', function(e){
-        // BUGFIX: Update links parts with the url of the clicked link
-        self.link_parts = parseurl($(this).attr('href'));
-        if (typeof(self.link_parts['qs']['anon']) !== 'undefined'){
-          delete self.link_parts['qs']['anon'];
-        }
-        self._update_send_link();
-        self.display($(this));
-        e.stopPropagation();
-        return false;
-      });
+      // enable the button
+     self.enableButton();
 
      $('a.ckanpackager-send', self.$form).on('click', function(e){
         self.hide();
@@ -149,36 +162,19 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
       $('.packager-link-active').removeClass('packager-link-active');
     },
 
-   /**
-     * _make_form
-     *
+    /**
      * Create the form, add it the body (hidden) and return the jQuery object.
+     * @param html  the template's html
      */
-    _make_form: function() {
-      var link_size = {
-        width: self.el.outerWidth(),
-        height: self.el.outerHeight()
-      };
-
-     var $tpl = $(self.options.template);
-
-      if (self.is_anon) {
-         var msg = self.options.anon_message;
-         $('<input class="ckanpackager-email" type="text" name="email" placeholder="Please enter your email address" value="" />').insertAfter($tpl.find('p'));
-      }else{
-         var msg = self.options.auth_message;
-      }
-
-      $tpl.find('p').html(msg);
-
-      var $form = $tpl.css({
-        position: 'absolute',
-        background: 'transparent',
-        width: String(self.options.overlay_width) + "px",
-        zIndex: "101",
-        display: "none"
+    _make_form: function(html) {
+      var $tpl = $(html);
+      return $tpl.css({
+          position: 'absolute',
+          background: 'transparent',
+          width: String(self.options.overlay_width) + "px",
+          zIndex: "101",
+          display: "none"
       }).appendTo('body');
-      return $form;
     },
 
     /**
@@ -193,7 +189,7 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
      * If not present, nothing will happen.
      */
     _update_form_and_link: function() {
-      var size_input_html = '';
+      var totalRecordsText = '';
       self.offset = null;
       self.limit = null;
       self.sort = null;
@@ -213,14 +209,22 @@ this.ckan.module('ckanpackager-download-link', function (jQuery, _) {
         $.each(grid.getSortColumns(), function(i, c) {
           sort.push(c.columnId + (c.sortAsc ? ' ASC' : ' DESC'));
         });
-        if (!isNaN(from) && !isNaN(count) && !isNaN(total)){
+        if (!isNaN(from) && !isNaN(count) && !isNaN(total)) {
           self.offset = from - 1;
           self.limit = count;
           self.sort = sort.join(',');
-          size_input_html = self.options['download_size_input'].replace('{total}', total.toLocaleString())
+          totalRecordsText = total.toLocaleString();
         }
       }
-      self.$form.find('div.options').html(size_input_html);
+
+      $('#ckanpackager_total_records').html(totalRecordsText);
+      // if the total records text hasn't been updated, hide the options, otherwise show them
+      if (totalRecordsText === '') {
+        self.$form.find('div.options').hide();
+      } else {
+        self.$form.find('div.options').show();
+      }
+
       self.$form.find('div.options input').change(function(){
           self._update_send_link();
       });

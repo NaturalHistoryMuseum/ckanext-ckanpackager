@@ -93,7 +93,9 @@ class CkanPackagerController(t.BaseController):
         request_params = {
             'secret': config['secret'],
             'resource_id': resource_id,
-            'email': email
+            'email': email,
+            # default to csv format, this can be overridden in the params
+            'format': u'csv',
         }
 
         resource = t.get_action('resource_show')(None, {'id': resource_id})
@@ -103,7 +105,7 @@ class CkanPackagerController(t.BaseController):
             else:
                 packager_url += '/package_datastore'
             request_params['api_url'] = config['datastore_api'] + '/datastore_search'
-            for option in ['filters', 'q', 'limit', 'offset', 'resource_url', 'sort']:
+            for option in ['filters', 'q', 'limit', 'offset', 'resource_url', 'sort', 'format']:
                 if option in params:
                     if option == 'filters':
                         request_params['filters'] = json.dumps(self._parse_filters(params['filters']))

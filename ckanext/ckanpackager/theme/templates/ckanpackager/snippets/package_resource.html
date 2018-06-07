@@ -7,7 +7,7 @@
 
 {% resource 'ckanext-ckanpackager/main' %}
 
-<a data-module="ckanpackager-download-link" class="packager-link btn btn-primary"
+<a data-module="ckanpackager-download-link" class="packager-link btn btn-primary" data-module-resource-id="{{ res.id }}"
    href="{{ h.url_for_package_resource(pkg.id, res.id) }}">
   <i class="{{ bt_class }}"></i> {{ bt_text }}
 </a>

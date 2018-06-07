@@ -50,7 +50,8 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
         self.options = {
             overlay_width: 350,
             overlay_padding: 8,
-            page_container: '#content'
+            page_container: '#content',
+            resource_id: module.options.resourceId
         };
 
         /**
@@ -61,7 +62,8 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             // disable the button for now, we'll enable it once we get the template from the server
             self.disableButton();
             // request the template from the server, this is async
-            self.sandbox.client.getTemplate('ckanpackager_form.html', self._onReceiveSnippet);
+            var template_options = {resource_id: self.options.resource_id};
+            self.sandbox.client.getTemplate('ckanpackager_form.html', template_options, self._onReceiveSnippet);
         };
 
         /**
@@ -256,9 +258,9 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             $('#ckanpackager_total_records').html(totalRecordsText);
             // if the total records text hasn't been updated, hide the options, otherwise show them
             if (totalRecordsText === '') {
-                self.$form.find('div.options').hide();
+                self.$form.find('div.limits').hide();
             } else {
-                self.$form.find('div.options').show();
+                self.$form.find('div.limits').show();
             }
 
             self.$form.find('div.options input').change(function() {
@@ -330,6 +332,12 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
                     }
                 }
             }
+            if (self.$form.find('input[name=format]:checked').val() === 'tsv') {
+                self.link_parts['qs']['format'] = ['tsv'];
+            } else {
+                self.link_parts['qs']['format'] = ['csv'];
+            }
+
             var send_url = self.link_parts['path'];
             if (self.is_anon) {
                 self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];

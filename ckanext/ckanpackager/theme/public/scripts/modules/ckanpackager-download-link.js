@@ -51,7 +51,8 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             overlay_width: 350,
             overlay_padding: 8,
             page_container: '#content',
-            resource_id: module.options.resourceId
+            resource_id: module.options.resourceId,
+            is_record: module.options.isRecord
         };
 
         /**
@@ -62,7 +63,7 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             // disable the button for now, we'll enable it once we get the template from the server
             self.disableButton();
             // request the template from the server, this is async
-            var template_options = {resource_id: self.options.resource_id};
+            var template_options = {resource_id: self.options.resource_id, is_record: self.options.is_record};
             self.sandbox.client.getTemplate('ckanpackager_form.html', template_options, self._onReceiveSnippet);
         };
 

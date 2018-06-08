@@ -1,11 +1,12 @@
 import ckan.plugins as p
+from ckanext.ckanpackager.lib.helpers import should_show_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
 
 config = {}
 
 
 class CkanPackagerPlugin(p.SingletonPlugin):
-    p.implements(p.interfaces.ITemplateHelpers)
+    p.implements(p.interfaces.ITemplateHelpers, inherit=True)
     p.implements(p.interfaces.IRoutes, inherit=True)
     p.implements(p.IConfigurable)
     p.implements(p.IConfigurer)
@@ -27,7 +28,8 @@ class CkanPackagerPlugin(p.SingletonPlugin):
         Provide a helper for create a download url from a resource id
         """
         return {
-            'url_for_package_resource': url_for_package_resource
+            'url_for_package_resource': url_for_package_resource,
+            'should_show_format_options': should_show_format_options
         }
 
     def before_map(self, map_route):

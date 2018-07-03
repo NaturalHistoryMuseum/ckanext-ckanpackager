@@ -34,6 +34,15 @@ Compatibility
 
 The current version is being developed to work against CKAN's 1251 branch (resource views).
 
+Database Initialisation
+------------
+
+This extension uses a database table in the CKAN database to store stats about packaging events. This needs to be initialised before it is used to avoid errors. TO do that simply run this from within your ckan installation env with `<ckan_conf_file>` replaced with your ckan configuration file's path:
+
+```
+paster --plugin=ckanext-ckanpackager initdb -c <ckan_conf_file>
+```
+
 Configuration
 -------------
 

@@ -2,8 +2,10 @@ import json
 import urllib
 import urllib2
 import ckan.plugins.toolkit as t
+from ckan.plugins import PluginImplementations
 from ckan.lib.helpers import flash_error, flash_success
 import ckan.model as model
+from ckanext.ckanpackager.interfaces import ICkanPackager
 from ckanext.ckanpackager.plugin import config
 from ckanext.ckanpackager.lib.utils import is_downloadable_resource, url_for_resource_page, redirect_to
 from ckanext.ckanpackager.model.stat import CKANPackagerStat
@@ -62,7 +64,12 @@ class CkanPackagerController(t.BaseController):
             else:
                 email = t.request.params['email']
 
-            (packager_url, request_params) = self._prepare_packager_parameters(email, resource_id, t.request.params)
+            packager_url, request_params = self._prepare_packager_parameters(email, resource_id, t.request.params)
+
+            # cycle through any implementors
+            for plugin in PluginImplementations(ICkanPackager):
+                packager_url, request_params = plugin.before_package_request(resource_id, package_id, packager_url,
+                                                                     request_params)
 
             result = self._send_packager_request(packager_url, request_params)
             if 'message' in result:

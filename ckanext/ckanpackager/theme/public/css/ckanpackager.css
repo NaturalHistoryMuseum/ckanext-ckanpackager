@@ -22,12 +22,14 @@ div.ckanpackager-form input {
 div.ckanpackager-form div.options {
     text-align: left;
     vertical-align: middle;
+    padding-bottom: 0;
 }
 
 div.ckanpackager-form div.options label {
     vertical-align:middle;
     font-weight: normal;
     display: inline-block;
+    margin-left: 8px;
 }
 
 div.ckanpackager-form div.options label:after {

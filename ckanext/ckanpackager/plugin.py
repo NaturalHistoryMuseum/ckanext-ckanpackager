@@ -1,14 +1,15 @@
-import ckan.plugins as p
+from ckan.plugins import toolkit, implements, interfaces, SingletonPlugin, IConfigurable, IConfigurer
+from ckanext.ckanpackager.lib.helpers import should_show_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
 
 config = {}
 
 
-class CkanPackagerPlugin(p.SingletonPlugin):
-    p.implements(p.interfaces.ITemplateHelpers)
-    p.implements(p.interfaces.IRoutes, inherit=True)
-    p.implements(p.IConfigurable)
-    p.implements(p.IConfigurer)
+class CkanPackagerPlugin(SingletonPlugin):
+    implements(interfaces.ITemplateHelpers, inherit=True)
+    implements(interfaces.IRoutes, inherit=True)
+    implements(IConfigurable)
+    implements(IConfigurer)
 
     def configure(self, app_cfg):
         '''Implementation of IConfigurable.configure
@@ -27,7 +28,8 @@ class CkanPackagerPlugin(p.SingletonPlugin):
         Provide a helper for create a download url from a resource id
         '''
         return {
-            u'url_for_package_resource': url_for_package_resource
+            u'url_for_package_resource': url_for_package_resource,
+            u'should_show_format_options': should_show_format_options
         }
 
     def before_map(self, map_route):
@@ -44,6 +46,6 @@ class CkanPackagerPlugin(p.SingletonPlugin):
 
         Add our template directory
         '''
-        p.toolkit.add_template_directory(app_config, u'theme/templates')
-        p.toolkit.add_public_directory(config, u'theme/public')
-        p.toolkit.add_resource(u'theme/public', u'ckanext-ckanpackager')
+        toolkit.add_template_directory(app_config, u'theme/templates')
+        toolkit.add_public_directory(config, u'theme/public')
+        toolkit.add_resource(u'theme/public', u'ckanext-ckanpackager')

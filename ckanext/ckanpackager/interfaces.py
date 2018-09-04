@@ -4,7 +4,7 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 
-import ckan.plugins.interfaces as interfaces
+from ckan.plugins import interfaces
 
 
 class ICkanPackager(interfaces.Interface):

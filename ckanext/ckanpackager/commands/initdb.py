@@ -9,16 +9,15 @@ import logging
 from ckanext.ckanpackager.model.stat import Base
 
 import ckan.model as model
-from ckan.lib.cli import CkanCommand
+from ckan.plugins import toolkit
 
 log = logging.getLogger()
 
 
-class CKANPackagerCommand(CkanCommand):
+class CKANPackagerCommand(toolkit.CkanCommand):
     '''Create stats from GBIF
     
     paster --plugin=ckanext-ckanpackager initdb -c /etc/ckan/default/development.ini
-
 
     '''
 

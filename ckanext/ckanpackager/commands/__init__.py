@@ -6,7 +6,6 @@
 
 
 def main():
-    ''' '''
     pass
 
 

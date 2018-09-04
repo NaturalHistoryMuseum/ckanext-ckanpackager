@@ -15,11 +15,7 @@ from ckanext.ckanpackager.model.stat import CKANPackagerStat
 from ckanext.ckanpackager.plugin import config
 
 import ckan.model as model
-import ckan.plugins.toolkit as t
-from ckan.lib.helpers import flash_error, flash_success
-from ckan.plugins import PluginImplementations
-
-_ = t._
+from ckan.plugins import PluginImplementations, toolkit
 
 
 class PackagerControllerError(Exception):
@@ -27,8 +23,9 @@ class PackagerControllerError(Exception):
     pass
 
 
-class CkanPackagerController(t.BaseController):
+class CkanPackagerController(toolkit.BaseController):
     ''' '''
+
     def _setup_request(self, package_id=None, resource_id=None):
         '''Prepare generic values for a request
 
@@ -38,8 +35,8 @@ class CkanPackagerController(t.BaseController):
         '''
         self.package_id = package_id
         self.resource_id = resource_id
-        if u'destination' in t.request.params:
-            self.destination = t.request.params[u'destination']
+        if u'destination' in toolkit.request.params:
+            self.destination = toolkit.request.params[u'destination']
         else:
             self.destination = url_for_resource_page(self.package_id, self.resource_id)
 
@@ -48,20 +45,22 @@ class CkanPackagerController(t.BaseController):
         # Validate resource
         try:
             if not is_downloadable_resource(self.resource_id):
-                raise PackagerControllerError(_(u'This resource cannot be downloaded'))
-        except t.ObjectNotFound:
+                raise PackagerControllerError(
+                    toolkit._(u'This resource cannot be downloaded'))
+        except toolkit.ObjectNotFound:
             raise PackagerControllerError(u'Resource not found')
 
         # Validate anonymous access and email parameters
-        if u'anon' in t.request.params:
-            raise PackagerControllerError(_(
+        if u'anon' in toolkit.request.params:
+            raise PackagerControllerError(toolkit._(
                 u'You must be logged on or have javascript enabled to use this '
                 u'functionality.'))
-        if t.c.user and u'email' in t.request.params:
+        if toolkit.c.user and u'email' in toolkit.request.params:
             raise PackagerControllerError(
-                _(u'Parameter mismatch. Please reload the page and try again.'))
-        if not t.c.user and u'email' not in t.request.params:
-            raise PackagerControllerError(_(u'Please reload the page and try again.'))
+                toolkit._(u'Parameter mismatch. Please reload the page and try again.'))
+        if not toolkit.c.user and u'email' not in toolkit.request.params:
+            raise PackagerControllerError(
+                toolkit._(u'Please reload the page and try again.'))
 
     def package_resource(self, package_id, resource_id):
         '''Action called to package a resource
@@ -74,14 +73,14 @@ class CkanPackagerController(t.BaseController):
             self._setup_request(package_id=package_id, resource_id=resource_id)
             self._validate_request()
 
-            if t.c.user:
-                email = t.c.userobj.email
+            if toolkit.c.user:
+                email = toolkit.c.userobj.email
             else:
-                email = t.request.params[u'email']
+                email = toolkit.request.params[u'email']
 
             packager_url, request_params = self._prepare_packager_parameters(email,
                                                                              resource_id,
-                                                                             t.request.params)
+                                                                             toolkit.request.params)
 
             # cycle through any implementors
             for plugin in PluginImplementations(ICkanPackager):
@@ -92,13 +91,13 @@ class CkanPackagerController(t.BaseController):
 
             result = self._send_packager_request(packager_url, request_params)
             if u'message' in result:
-                flash_success(result[u'message'])
+                toolkit.h.flash_success(result[u'message'])
             else:
-                flash_success(_(
+                toolkit.h.flash_success(toolkit._(
                     u'Request successfully posted. The resource should be emailed to '
                     u'you shortly'))
         except PackagerControllerError as e:
-            flash_error(e.message)
+            toolkit.h.flash_error(e.message)
         else:
             # Create new download object
             stat = CKANPackagerStat(
@@ -128,7 +127,7 @@ class CkanPackagerController(t.BaseController):
             u'format': u'csv',
             }
 
-        resource = t.get_action(u'resource_show')(None, {
+        resource = toolkit.get_action(u'resource_show')(None, {
             u'id': resource_id
             })
         if resource.get(u'datastore_active', False):
@@ -160,10 +159,10 @@ class CkanPackagerController(t.BaseController):
                 # BUGFIX: BS timeout on download request
                 # Try and use the solr search if it exists
                 try:
-                    search_action = t.get_action(u'datastore_solr_search')
+                    search_action = toolkit.get_action(u'datastore_solr_search')
                 # Otherwise fallback to default
                 except KeyError:
-                    search_action = t.get_action(u'datastore_search')
+                    search_action = toolkit.get_action(u'datastore_search')
 
                 result = search_action({}, prep_req)
 
@@ -189,11 +188,11 @@ class CkanPackagerController(t.BaseController):
             response = urllib2.urlopen(request, urllib.urlencode(request_params))
         except urllib2.URLError as e:
             raise PackagerControllerError(
-                _(u'Failed to contact the ckanpackager service'))
+                toolkit._(u'Failed to contact the ckanpackager service'))
         if response.code != 200:
             response.close()
             raise PackagerControllerError(
-                _(u'Failed to contact the ckanpackager service'))
+                toolkit._(u'Failed to contact the ckanpackager service'))
 
         # Read response and return.
         try:
@@ -201,7 +200,7 @@ class CkanPackagerController(t.BaseController):
             result = json.loads(data)
         except ValueError:
             raise PackagerControllerError(
-                _(u'Could not parse response from ckanpackager service'))
+                toolkit._(u'Could not parse response from ckanpackager service'))
         finally:
             response.close()
         return result

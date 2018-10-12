@@ -7,8 +7,7 @@
 from ckanext.ckanpackager.lib.helpers import should_show_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
 
-from ckan.plugins import (IConfigurable, IConfigurer, SingletonPlugin, implements,
-                          interfaces, toolkit)
+from ckan.plugins import SingletonPlugin, implements, interfaces, toolkit
 
 config = {}
 
@@ -17,8 +16,8 @@ class CkanPackagerPlugin(SingletonPlugin):
     ''' '''
     implements(interfaces.ITemplateHelpers, inherit=True)
     implements(interfaces.IRoutes, inherit=True)
-    implements(IConfigurable)
-    implements(IConfigurer)
+    implements(interfaces.IConfigurable)
+    implements(interfaces.IConfigurer)
 
     def configure(self, app_cfg):
         '''Implementation of IConfigurable.configure

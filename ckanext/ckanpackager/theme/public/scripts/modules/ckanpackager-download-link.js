@@ -170,7 +170,8 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
                 return false;
             }
             self.visible = true;
-            // Update form with run time data
+            // Update form with run time data. Note that the view plugin reloads the grid, so we
+            // have to run this function to query the grid object every time
             self._update_form_and_link();
 
             // Update position, in case there has been some movement (eg. removed flash alerts)
@@ -232,30 +233,42 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             self.offset = null;
             self.limit = null;
             self.sort = null;
-            // See if we have a grid with records & page. Note that the view plugin
-            // reloads the grid, so we have to query the grid object every time.
-            var $iframe = $('iframe').contents();
-            var $grid = $('div.recline-slickgrid', $iframe);
-            var $controls = $('div[data-module*=recline_view] div.controls', $iframe);
-            var $from = $('input[name=from]', $controls);
-            var $total = $('div.recline-record-count span.count', $controls);
-            if ($grid.length === 1 && $grid.get(0).grid && $from.length === 1 && $total.length === 1) {
-                var grid = $grid.get(0).grid;
-                var total = parseInt($total.html());
-                var from = parseInt($from.val());
-                var count = grid.getDataLength();
-                var sort = [];
-                $.each(grid.getSortColumns(), function(i, c) {
-                    sort.push(c.columnId + (c.sortAsc ? ' ASC' : ' DESC'));
-                });
-                if (!isNaN(from) && !isNaN(count) && !isNaN(total)) {
-                    self.offset = from - 1;
-                    self.limit = count;
-                    self.sort = sort.join(',');
-                    totalRecordsText = total.toLocaleString();
+            // loop through the available iframes, looking for the slick grid one if it exists
+            $('iframe').each(function() {
+                var $iframe;
+                // use a try catch and continue to handle the eventuality where we attempt to get
+                // the contents of an iframe which doesn't have the same origin as us (this should
+                // throw an error in most browsers for security reasons)
+                try {
+                    $iframe = $(this).contents();
+                } catch (e) {
+                    // continue, we just ignore this iframe
+                    return true;
                 }
-            }
-
+                // see if we have a grid with records & pagination details
+                var $grid = $('div.recline-slickgrid', $iframe);
+                var $controls = $('div[data-module*=recline_view] div.controls', $iframe);
+                var $from = $('input[name=from]', $controls);
+                var $total = $('div.recline-record-count span.count', $controls);
+                if ($grid.length === 1 && $grid.get(0).grid && $from.length === 1 && $total.length === 1) {
+                    var grid = $grid.get(0).grid;
+                    var total = parseInt($total.html());
+                    var from = parseInt($from.val());
+                    var count = grid.getDataLength();
+                    var sort = [];
+                    $.each(grid.getSortColumns(), function(i, c) {
+                        sort.push(c.columnId + (c.sortAsc ? ' ASC' : ' DESC'));
+                    });
+                    if (!isNaN(from) && !isNaN(count) && !isNaN(total)) {
+                        self.offset = from - 1;
+                        self.limit = count;
+                        self.sort = sort.join(',');
+                        totalRecordsText = total.toLocaleString();
+                        // break out of the loop as we've found the iframe with the grid
+                        return false;
+                    }
+                }
+            });
             $('#ckanpackager_total_records').html(totalRecordsText);
             // if the total records text hasn't been updated, hide the options, otherwise show them
             if (totalRecordsText === '') {

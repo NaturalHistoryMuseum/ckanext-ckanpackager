@@ -173,18 +173,19 @@ class CkanPackagerController(t.BaseController):
         return result
 
     def _parse_filters(self, filters):
-        """ Parse filters into JSON dictionary
+        """
+        Parse filters into JSON dictionary
 
-        TODO: Is there a CKAN API for this? The format changed with recent versions of CKAN, should we check for
-               version?
+        TODO: Is there a CKAN API for this? The format changed with recent versions of CKAN, should
+              we check for version?
 
-        @param filters: String describing the filters
-        @return: Dictionary of name to list of values
+        :param filters: string describing the filters
+        :return: dict of name to list of values
         """
         result = {}
         for f in filters.split('|'):
             try:
-                (name, value) = f.split(':')
+                name, value = f.split(':', 1)
                 if name in result:
                     result[name].append(value)
                 else:

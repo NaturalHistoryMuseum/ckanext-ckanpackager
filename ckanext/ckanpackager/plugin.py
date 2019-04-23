@@ -6,6 +6,7 @@
 
 from ckanext.ckanpackager.lib.helpers import should_show_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
+from ckanext.ckanpackager.logic import action, auth
 
 from ckan.plugins import SingletonPlugin, implements, interfaces, toolkit
 
@@ -18,6 +19,8 @@ class CkanPackagerPlugin(SingletonPlugin):
     implements(interfaces.IRoutes, inherit=True)
     implements(interfaces.IConfigurable)
     implements(interfaces.IConfigurer)
+    implements(interfaces.IActions)
+    implements(interfaces.IAuthFunctions)
 
     def configure(self, app_cfg):
         '''Implementation of IConfigurable.configure
@@ -71,3 +74,15 @@ class CkanPackagerPlugin(SingletonPlugin):
         toolkit.add_template_directory(app_config, u'theme/templates')
         toolkit.add_public_directory(config, u'theme/public')
         toolkit.add_resource(u'theme/public', u'ckanext-ckanpackager')
+
+    # IActions
+    def get_actions(self):
+        return {
+            u'packager_stats': action.get_packager_stats_action(config),
+            }
+
+    # IAuthFunctions
+    def get_auth_functions(self):
+        return {
+            u'packager_stats': auth.packager_stats,
+            }

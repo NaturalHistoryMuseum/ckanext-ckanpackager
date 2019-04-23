@@ -219,7 +219,7 @@ class CkanPackagerController(toolkit.BaseController):
         result = {}
         for f in filters.split(u'|'):
             try:
-                (name, value) = f.split(u':')
+                name, value = f.split(u':', 1)
                 if name in result:
                     result[name].append(value)
                 else:

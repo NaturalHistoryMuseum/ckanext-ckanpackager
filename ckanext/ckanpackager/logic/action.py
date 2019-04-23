@@ -1,6 +1,6 @@
 import os
 import requests
-from ckan import plugins, logic
+from ckan.plugins import toolkit
 
 # we only allow a certain set of request parameters. These are the ones accepted by the
 # ckanpackager's statistics/requests endpoint, minus the secret
@@ -24,7 +24,7 @@ def get_packager_stats_action(config):
     :param config: the config object
     :return: the packager_stats action function
     """
-    @logic.side_effect_free
+    @toolkit.side_effect_free
     def packager_stats(context, data_dict):
         '''
         Provides statistical information about the download requests made to the packager.
@@ -52,7 +52,7 @@ def get_packager_stats_action(config):
         :rtype: list of dicts
         '''
         # check the access is appropriate
-        plugins.toolkit.check_access(u'packager_stats', context, data_dict)
+        toolkit.check_access(u'packager_stats', context, data_dict)
 
         # extract the parameters we're interested in from the allowed ones
         params = {key: value for key, value in data_dict.items() if key in ALLOWED_PARAMS}

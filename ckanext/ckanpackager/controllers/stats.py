@@ -53,6 +53,6 @@ class CkanStatsController(toolkit.BaseController):
         # make the request
         response = requests.post(url, data=data)
         # the return is going to be some json, set the content-type appropriately
-        toolkit.response.headers['Content-Type'] = 'application/json'
+        toolkit.response.headers[u'Content-Type'] = u'application/json'
         # and return the data
         return json.dumps(response.json())

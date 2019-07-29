@@ -34,7 +34,7 @@ setup(
     entry_points= \
         u'''
         [ckan.plugins]
-            ckan_packager=ckanext.ckanpackager.plugin:CkanPackagerPlugin
+            ckanpackager=ckanext.ckanpackager.plugin:CkanPackagerPlugin
 
         [paste.paster_command]
             initdb=ckanext.ckanpackager.commands.initdb:CKANPackagerCommand

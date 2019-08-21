@@ -4,6 +4,6 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 
-from . import packager, stats
+from . import packager
 
-blueprints = [packager.blueprint, stats.blueprint]
+blueprints = [packager.blueprint]

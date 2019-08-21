@@ -33,9 +33,9 @@ def is_downloadable_resource(resource_id):
 def url_for_package_resource(package_id, resource_id, anon=True, use_request=True,
                              extra_filters=None):
     '''Given a resource_id, return the URL for packaging that resource
-    
+
     Will return an empty URL if the resource exists but is not downloadable.
-    
+
     @package_id: The package id
 
     :param resource_id: The resource id
@@ -44,7 +44,7 @@ def url_for_package_resource(package_id, resource_id, anon=True, use_request=Tru
     :param use_request: If True (default) include the filters of the current request
     :param extra_filters: Extra filters (on top of those in the request URL) to add to
     the link (Default value = None)
-    :param package_id: 
+    :param package_id:
     :returns: The URL for the action.
     :raises s: ckan.plugins.toolkit.ObjectNotFound: If the resource does not exist
 
@@ -77,14 +77,14 @@ def url_for_package_resource(package_id, resource_id, anon=True, use_request=Tru
         else:
             return u''
 
-    return toolkit.url_for(u'package_resource', **get)
+    return toolkit.url_for(u'ckanpackager.package_resource', **get)
 
 
 def url_for_resource_page(package_id, resource_id):
     '''Helper function to return the URL of a resource page
 
     :param resource_id: Resource id
-    :param package_id: 
+    :param package_id:
     :returns: The URL for the resource
     :raises s: ckan.plugins.toolkit.ObjectNotFound: If the resource does not exist
 
@@ -100,7 +100,7 @@ def redirect_to(destination, **kw):
     query strings
 
     :param destination: Destination URL. May contain query string, etc.
-    :param **kw: 
+    :param **kw:
 
     '''
     parts = urlparse.urlparse(destination)

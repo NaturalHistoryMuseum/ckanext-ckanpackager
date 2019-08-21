@@ -19,7 +19,7 @@ from ckan.plugins import PluginImplementations, toolkit
 blueprint = Blueprint(name=u'ckanpackager', import_name=__name__)
 
 
-@blueprint.route(u'/dataset/<package_id>/resource/<resource_id>/package')
+@blueprint.route('/dataset/<package_id>/resource/<resource_id>/package')
 def package_resource(package_id, resource_id):
     '''Action called to package a resource.'''
     try:

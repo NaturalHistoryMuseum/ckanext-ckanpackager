@@ -14,7 +14,7 @@ from ckan.plugins import toolkit
 blueprint = Blueprint(name=u'ckanpackager-stats', import_name=__name__)
 
 
-@blueprint.route(u'/stats/ckanpackager')
+@blueprint.route('/stats/ckanpackager')
 def get_stats():
     '''
     Retrieves the stats from the ckanpackager's statistics/requests endpoint, passing any

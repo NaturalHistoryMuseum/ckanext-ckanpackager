@@ -30,7 +30,9 @@ setup(
     namespace_packages=[u'ckanext', u'ckanext.ckanpackager'],
     include_package_data=True,
     zip_safe=False,
-    install_requires=[],
+    install_requires=[
+        'requests>=1.1.0',
+        ],
     entry_points= \
         u'''
         [ckan.plugins]

@@ -11,8 +11,6 @@ from ckanext.ckanpackager.logic import action, auth
 
 from ckan.plugins import SingletonPlugin, implements, interfaces, toolkit
 
-config = {}
-
 
 class CkanPackagerPlugin(SingletonPlugin):
     ''' '''
@@ -29,12 +27,9 @@ class CkanPackagerPlugin(SingletonPlugin):
         :param app_cfg: config dictionary
 
         '''
-        config[u'url'] = app_cfg.get(u'ckanext.ckanpackager.url')
-        config[u'secret'] = app_cfg.get(u'ckanext.ckanpackager.secret')
-        config[u'allow_anon'] = app_cfg.get(u'ckanext.ckanpackager.allow_anon', False)
         # As per ckan.controllers.packager.resource_read - there is no API for getting
         #  this.
-        config[u'datastore_api'] = u'%s/api/action' % app_cfg.get(u'ckan.site_url',
+        app_cfg[u'datastore_api'] = u'%s/api/action' % app_cfg.get(u'ckan.site_url',
                                                                   u'').rstrip('/')
 
     ## IBlueprint
@@ -62,13 +57,13 @@ class CkanPackagerPlugin(SingletonPlugin):
 
         '''
         toolkit.add_template_directory(app_config, u'theme/templates')
-        toolkit.add_public_directory(config, u'theme/public')
+        toolkit.add_public_directory(app_config, u'theme/public')
         toolkit.add_resource(u'theme/public', u'ckanext-ckanpackager')
 
     # IActions
     def get_actions(self):
         return {
-            u'packager_stats': action.get_packager_stats_action(config),
+            u'packager_stats': action.packager_stats,
             }
 
     # IAuthFunctions

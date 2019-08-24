@@ -83,7 +83,7 @@ def prepare_packager_parameters(email, resource_id, params):
             if option in params:
                 if option == u'filters':
                     request_params[u'filters'] = json.dumps(
-                        _parse_filters(params[u'filters']))
+                        parse_filters(params[u'filters']))
                 else:
                     request_params[option] = params[option]
         if u'limit' not in request_params:

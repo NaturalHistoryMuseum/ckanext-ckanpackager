@@ -49,10 +49,10 @@ def packager_stats(context, data_dict):
     params.setdefault(u'limit', 100)
     params.setdefault(u'offset', 0)
     # create the url to post to
-    url = os.path.join(toolkit.config[u'ckanext.ckanpackager.url'], u'statistics', u'requests')
+    url = os.path.join(toolkit.config[u'ckanpackager.url'], u'statistics', u'requests')
     # this is the data we're going to pass in the request, it has to have the secret in it
     data = {
-        u'secret': toolkit.config[u'ckanext.ckanpackager.secret']
+        u'secret': toolkit.config[u'ckanpackager.secret']
         }
     # update the data we're going to send with the allowed options from the data_dict
     data.update(params)

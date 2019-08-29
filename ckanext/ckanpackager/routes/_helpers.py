@@ -60,9 +60,9 @@ def prepare_packager_parameters(email, resource_id, params):
     :returns: A tuple defining an URL and a dictionary of parameters
 
     '''
-    packager_url = toolkit.config.get(u'ckanext.ckanpackager.url')
+    packager_url = toolkit.config.get(u'ckanpackager.url')
     request_params = {
-        u'secret': toolkit.config.get(u'ckanext.ckanpackager.secret'),
+        u'secret': toolkit.config.get(u'ckanpackager.secret'),
         u'resource_id': resource_id,
         u'email': email,
         # default to csv format, this can be overridden in the params

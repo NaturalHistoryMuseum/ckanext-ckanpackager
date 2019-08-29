@@ -70,10 +70,10 @@ def get_stats():
     :return: the JSON returned by the ckanpackager
     '''
     # create the url to post to
-    url = os.path.join(toolkit.config.get(u'ckanext.ckanpackager.url'), u'statistics', u'requests')
+    url = os.path.join(toolkit.config.get(u'ckanpackager.url'), u'statistics', u'requests')
     # this is the data we're going to pass in the request, it has to have the secret in it
     data = {
-        u'secret': toolkit.config.get(u'ckanext.ckanpackager.secret')
+        u'secret': toolkit.config.get(u'ckanpackager.secret')
         }
     # update the data dict with the options from the request parameters
     data.update(_helpers.get_options_from_request())

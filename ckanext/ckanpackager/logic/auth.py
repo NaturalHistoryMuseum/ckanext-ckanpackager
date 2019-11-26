@@ -1,4 +1,4 @@
-from ckan import logic
+from ckan.plugins import toolkit
 
 
 def packager_stats(context, data_dict):
@@ -6,4 +6,4 @@ def packager_stats(context, data_dict):
     if resource_id is not None:
         return True
     else:
-        return logic.check_access(u'resource_show', context, {u'id': resource_id})
+        return toolkit.check_access(u'resource_show', context, {u'id': resource_id})

@@ -4,11 +4,6 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 
+from . import packager
 
-def main():
-    ''' '''
-    pass
-
-
-if __name__ == u'__main__':
-    main()
+blueprints = [packager.blueprint]

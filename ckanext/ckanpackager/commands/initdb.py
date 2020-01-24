@@ -6,17 +6,17 @@
 
 import logging
 
-from ckanext.ckanpackager.model.stat import Base
-
 import ckan.model as model
 from ckan.plugins import toolkit
+
+from ..model.stat import ckanpackager_stats_table
 
 log = logging.getLogger()
 
 
 class CKANPackagerCommand(toolkit.CkanCommand):
     '''Create stats from GBIF
-    
+
     paster --plugin=ckanext-ckanpackager initdb -c /etc/ckan/default/development.ini
 
     '''
@@ -33,4 +33,5 @@ class CKANPackagerCommand(toolkit.CkanCommand):
     @staticmethod
     def _create_table():
         ''' '''
-        Base.metadata.create_all(model.meta.engine)
+        if not ckanpackager_stats_table.exists(model.meta.engine):
+            ckanpackager_stats_table.create(model.meta.engine)

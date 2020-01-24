@@ -3,20 +3,25 @@
 #
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
+from ckan.model import meta, DomainObject
+from sqlalchemy import Column, DateTime, Integer, func, Table, UnicodeText
+
+ckanpackager_stats_table = Table(
+    u'ckanpackager_stats',
+    meta.metadata,
+    Column(u'id', Integer, primary_key=True),
+    # the current timestamp
+    Column(u'inserted_on', DateTime, default=func.now()),
+    Column(u'count', Integer),
+    Column(u'resource_id', UnicodeText),
+)
 
 
-from sqlalchemy import Column, DateTime, Integer, String, func
-from sqlalchemy.ext.declarative import declarative_base
+class CKANPackagerStat(DomainObject):
+    '''
+    Object for a datastore download row.
+    '''
+    pass
 
-Base = declarative_base()
 
-
-class CKANPackagerStat(Base):
-    '''Table for holding resource stats'''
-    __tablename__ = u'ckanpackager_stats'
-
-    id = Column(Integer, primary_key=True)
-    inserted_on = Column(DateTime,
-                         default=func.now())  # the current timestamp
-    count = Column(Integer)
-    resource_id = Column(String)
+meta.mapper(CKANPackagerStat, ckanpackager_stats_table)

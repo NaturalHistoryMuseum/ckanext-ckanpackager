@@ -333,6 +333,9 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             if (window_link_parts['qs']['filters']) {
                 self.link_parts['qs']['filters'] = window_link_parts['qs']['filters'];
             }
+            if (window_link_parts['qs']['q']) {
+                self.link_parts['qs']['q'] = window_link_parts['qs']['q'];
+            }
             // Add offset/limit/sort if needed
             delete self.link_parts['qs']['offset'];
             delete self.link_parts['qs']['limit'];

@@ -20,7 +20,8 @@
 
                 {% if not c.userobj %}
                 <input class="ckanpackager-email" type="text" name="email"
-                       placeholder="{{ _('Please enter your email address') }}" value="" />
+                       placeholder="{{ _('Please enter your email address') }}"
+                       aria-label="{{ _('Please enter your email address') }}" value="" />
                 {% endif %}
 
                 <div class="options limits">

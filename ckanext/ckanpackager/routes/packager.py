@@ -6,55 +6,51 @@
 
 import os
 import requests
-from ckanext.ckanpackager.interfaces import ICkanPackager
-from ckanext.ckanpackager.model.stat import CKANPackagerStat
-from flask import Blueprint, jsonify
-
 from ckan.model import Session
 from ckan.plugins import PluginImplementations, toolkit
-from . import _helpers
+from flask import Blueprint, jsonify
+
+from ..interfaces import ICkanPackager
+from ..model.stat import CKANPackagerStat
+from ..lib.utils import get_redirect_url, validate_request, prepare_packager_parameters, \
+    send_packager_request, PackagerControllerError, get_options_from_request
 
 blueprint = Blueprint(name=u'ckanpackager', import_name=__name__)
+
+success_message = u'Request successfully posted. The resource should be emailed to you shortly.'
 
 
 @blueprint.route('/dataset/<package_id>/resource/<resource_id>/package')
 def package_resource(package_id, resource_id):
-    '''Action called to package a resource.'''
+    '''
+    Route which when called queues a download and then redirects the caller to either the requested
+    destination or the resource home page.
+
+    :param package_id: the package id
+    :param resource_id: the resource id
+    '''
+    destination = get_redirect_url(package_id=package_id, resource_id=resource_id)
     try:
-        destination = _helpers.setup_request(package_id=package_id, resource_id=resource_id)
-        _helpers.validate_request(resource_id)
-
-        if toolkit.c.user:
-            email = toolkit.c.userobj.email
-        else:
-            email = toolkit.request.params[u'email']
-
-        packager_url, request_params = _helpers.prepare_packager_parameters(email,
-                                                                            resource_id,
-                                                                            toolkit.request.params)
+        validate_request(resource_id)
+        packager_url, params = prepare_packager_parameters(resource_id, toolkit.request.params)
 
         # cycle through any implementors
         for plugin in PluginImplementations(ICkanPackager):
-            packager_url, request_params = plugin.before_package_request(resource_id,
-                                                                         package_id,
-                                                                         packager_url,
-                                                                         request_params)
+            packager_url, params = plugin.before_package_request(resource_id, package_id,
+                                                                 packager_url, params)
 
-        result = _helpers.send_packager_request(packager_url, request_params)
-        if u'message' in result:
-            toolkit.h.flash_success(result[u'message'])
-        else:
-            toolkit.h.flash_success(toolkit._(
-                u'Request successfully posted. The resource should be emailed to '
-                u'you shortly.'))
-    except _helpers.PackagerControllerError as e:
+        result = send_packager_request(packager_url, params)
+        toolkit.h.flash_success(result.get(u'message', success_message))
+    except PackagerControllerError as e:
         toolkit.h.flash_error(e.message)
     else:
-        # Create new download object
+        # create new download stats object
         stat = CKANPackagerStat(
-            resource_id=request_params[u'resource_id'],
-            count=request_params.get(u'limit', 0),
-            )
+            resource_id=params[u'resource_id'],
+            # TODO: do this in a more robust way? This currently relies on
+            #       prepare_packager_parameters adding a limit to the params
+            count=params.get(u'limit', 0),
+        )
         Session.add(stat)
         Session.commit()
 
@@ -74,9 +70,9 @@ def get_stats():
     # this is the data we're going to pass in the request, it has to have the secret in it
     data = {
         u'secret': toolkit.config.get(u'ckanpackager.secret')
-        }
+    }
     # update the data dict with the options from the request parameters
-    data.update(_helpers.get_options_from_request())
+    data.update(get_options_from_request())
     # make the request
     response = requests.post(url, data=data)
     # and return the data

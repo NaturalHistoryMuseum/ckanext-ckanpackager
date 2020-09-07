@@ -3,26 +3,17 @@
         <form>
             <fieldset>
                 <legend class="ckanpackager-form-legend">
-                {% if c.userobj %}
-                    {% if is_record == 'true' %}
-                        <p>{{ _('The record will be packaged and sent to the email address registered with your account.') }}</p>
-                    {% else %}
-                        <p>{{ _('The resource will be extracted, with current filters applied, and an email will be sent to your registered address shortly.') }}</p>
-                    {% endif %}
+                {% if is_record == 'true' %}
+                {{ _('Please enter your email address below, and the record will be packaged and sent to you.') }}
                 {% else %}
-                    {% if is_record == 'true' %}
-                        <p>{{ _('Please enter your email address below, and the record will be packaged and sent to you.') }}</p>
-                    {% else %}
-                        <p>{{ _('The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.') }}</p>
-                    {% endif %}
+                {{ _('The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.') }}
                 {% endif %}
                 </legend>
 
-                {% if not c.userobj %}
                 <input class="ckanpackager-email" type="text" name="email"
                        placeholder="{{ _('Please enter your email address') }}"
-                       aria-label="{{ _('Please enter your email address') }}" value="" />
-                {% endif %}
+                       aria-label="{{ _('Please enter your email address') }}"
+                       value="{{ c.userobj.email }}" />
 
                 <div class="options limits">
                     {{ _('Download') }}:<br />

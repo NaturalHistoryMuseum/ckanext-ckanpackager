@@ -1,37 +1,54 @@
 <div>
     <div class="ckanpackager-form">
-        {% if c.userobj %}
-            {% if is_record == 'true' %}
-                <p>{{ _('The record will be packaged and sent to the email address registered with your account.') }}</p>
-            {% else %}
-                <p>{{ _('The resource will be extracted, with current filters applied, and an email will be sent to your registered address shortly.') }}</p>
-            {% endif %}
-        {% else %}
-            {% if is_record == 'true' %}
-                <p>{{ _('Please enter your email address below, and the record will be packaged and sent to you.') }}</p>
-            {% else %}
-                <p>{{ _('The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.') }}</p>
-            {% endif %}
-            <input class="ckanpackager-email" type="text" name="email" placeholder="{{ _('Please enter your email address') }}" value="" />
-        {% endif %}
+        <form>
+            <fieldset>
+                <legend class="ckanpackager-form-legend">
+                {% if is_record == 'true' %}
+                {{ _('Please enter your email address below, and the record will be packaged and sent to you.') }}
+                {% else %}
+                {{ _('The resource will be extracted, with current filters applied, and an email will be sent to the given address shortly.') }}
+                {% endif %}
+                </legend>
 
-        <div class="options limits">
-            {{ _('Download') }}:<br />
-            <label for="page"><input id="page" type="radio" name="content" value="page" checked="checked"/> {{ _('this page only') }}</label>
-            <label for="all"><input id="all" type="radio" name="content" value="all"/> {{ _('all') }} <span id="ckanpackager_total_records">?</span> {{ _('records') }}</label><br />
-        </div>
-        {% if h.should_show_format_options(resource_id) %}
-        <div class="options">
-            <form>
-                {{ _('Format') }}:<br />
-                <label for="{{ resource_id }}-csv"><input id="{{ resource_id }}-csv" type="radio" name="format" value="csv" checked="checked"/> {{ _('CSV') }}</label>
-                <label for="{{ resource_id }}-tsv"><input id="{{ resource_id }}-tsv" type="radio" name="format" value="tsv"/> {{ _('TSV') }}</label><br />
-            </form>
-        </div>
-        {% endif %}
-        {% block action_buttons %}
-            <a class="ckanpackager-send btn btn-primary" href="#">{{ _('Send') }}</a>
-            <a class="ckanpackager-cancel btn btn-warning" href="#">{{ _('Cancel') }}</a>
-        {% endblock %}
+                <input class="ckanpackager-email" type="text" name="email"
+                       placeholder="{{ _('Please enter your email address') }}"
+                       aria-label="{{ _('Please enter your email address') }}"
+                       value="{{ c.userobj.email }}" />
+
+                <div class="options limits">
+                    {{ _('Download') }}:<br />
+                    <label for="page">
+                        <input id="page" type="radio" name="content" value="page" checked="checked"/>
+                        {{ _('this page only') }}
+                    </label>
+                    <label for="all">
+                        <input id="all" type="radio" name="content" value="all"/>
+                        {{ _('all') }} <span id="ckanpackager_total_records">?</span> {{ _('records') }}
+                    </label>
+                    <br />
+                </div>
+
+                {% if h.should_show_format_options(resource_id) %}
+                <div class="options">
+                    {{ _('Format') }}:<br />
+                    <label for="{{ resource_id }}-csv">
+                        <input id="{{ resource_id }}-csv" type="radio" name="format" value="csv"
+                               checked="checked"/>
+                        {{ _('CSV') }}
+                    </label>
+                    <label for="{{ resource_id }}-tsv">
+                        <input id="{{ resource_id }}-tsv" type="radio" name="format" value="tsv"/>
+                        {{ _('TSV') }}
+                    </label>
+                    <br />
+                </div>
+                {% endif %}
+
+                {% block action_buttons %}
+                <a class="ckanpackager-send btn btn-primary" href="#">{{ _('Send') }}</a>
+                <a class="ckanpackager-cancel btn btn-warning" href="#">{{ _('Cancel') }}</a>
+                {% endblock %}
+            </fieldset>
+        </form>
     </div>
 </div>

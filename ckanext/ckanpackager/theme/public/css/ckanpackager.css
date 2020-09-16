@@ -57,3 +57,7 @@ a.packager-link.packager-link-active:hover {
 .actions li {
     vertical-align: top;
 }
+
+.ckanpackager-form-legend {
+    font-size: 14px;
+}

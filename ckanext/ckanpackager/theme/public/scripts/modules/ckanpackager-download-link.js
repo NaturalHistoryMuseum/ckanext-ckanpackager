@@ -89,9 +89,6 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             self.el.on('click', function(e) {
                 // TODO: Bugfix, update links parts with the url of the clicked link
                 self.link_parts = parseurl($(this).attr('href'));
-                if (typeof(self.link_parts['qs']['anon']) !== 'undefined') {
-                    delete self.link_parts['qs']['anon'];
-                }
                 self._update_send_link();
                 self.display($(this));
                 e.stopPropagation();
@@ -119,11 +116,6 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             }
 
             self.link_parts = parseurl(url);
-            self.is_anon = (typeof(self.link_parts['qs']['anon']) !== 'undefined');
-
-            if (typeof(self.link_parts['qs']['anon']) !== 'undefined') {
-                delete self.link_parts['qs']['anon'];
-            }
 
             // Prepare object
             self.$form = self._make_form(html);
@@ -132,11 +124,9 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             self._update_send_link();
 
             // Update send action when email address is entered
-            if (self.is_anon) {
-                $('input.ckanpackager-email', self.$form).change(function() {
-                    self._update_send_link();
-                });
-            }
+            $('input.ckanpackager-email', self.$form).change(function() {
+                self._update_send_link();
+            });
 
             // enable the button
             self.enableButton();
@@ -356,9 +346,7 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
             }
 
             var send_url = self.link_parts['path'];
-            if (self.is_anon) {
-                self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];
-            }
+            self.link_parts['qs']['email'] = [encodeURIComponent($('input.ckanpackager-email', self.$form).val())];
             var cat = [];
             for (var i in self.link_parts['qs']) {
                 for (var j in self.link_parts['qs'][i]) {

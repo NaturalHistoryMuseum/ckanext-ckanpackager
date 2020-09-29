@@ -17,7 +17,7 @@ Ckanpackager is a stand-alone service that can be instructed to fetch data on a 
 
 The extension provides an HTML snippet that can be used to replace the Download button on resources. The new button will:
 - Provide an overlay explaining the link will be sent later on;
-- If anonymous downloading is enabled, provide a form for users to enter the destination email address;
+- Provide a form for users to enter the destination email address;
 - On resource pages, the button will ensure that currently applied filters and searches are forwarded on to the ckanpackager service.
 
 This extension uses a database table in the CKAN database to store stats about packaging events.

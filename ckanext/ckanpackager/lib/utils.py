@@ -24,15 +24,13 @@ def is_downloadable_resource(resource_id):
     return resource.get(u'datastore_active', False) or resource.get(u'url', False)
 
 
-def url_for_package_resource(package_id, resource_id, anon=True, use_request=True,
-                             extra_filters=None):
+def url_for_package_resource(package_id, resource_id, use_request=True, extra_filters=None):
     '''
     Given a resource_id, return the URL for packaging that resource. Will return an empty URL if the
     resource exists but is not downloadable.
 
     :param package_id: the package id
     :param resource_id: the resource id
-    :param anon: if True, will add 'anon=1' to the query string *if* this is an anonymous request
     :param use_request: if True (default) include the filters of the current request
     :param extra_filters: extra filters (on top of those in the request URL) to add to the link
     :raises ckan.plugins.toolkit.ObjectNotFound: if the resource does not exist
@@ -61,8 +59,6 @@ def url_for_package_resource(package_id, resource_id, anon=True, use_request=Tru
     params[u'resource_id'] = resource_id
     params[u'package_id'] = package_id
     params[u'destination'] = toolkit.request.url
-    if anon and not toolkit.c.user:
-        params[u'anon'] = u'1'
 
     return toolkit.url_for(u'ckanpackager.package_resource', **params)
 
@@ -92,12 +88,6 @@ def validate_request(resource_id):
             raise PackagerControllerError.build(u'This resource cannot be downloaded')
     except toolkit.ObjectNotFound:
         raise PackagerControllerError.build(u'Resource not found')
-
-    # validate anonymous access and email parameters
-    if u'anon' in toolkit.request.params:
-        # TODO: what the jamboree is this (what does anonymous access have to do with javascript?)
-        raise PackagerControllerError.build(u'You must be logged on or have javascript enabled to'
-                                            u'use this functionality.')
 
     # check that we have an email address
     if u'email' not in toolkit.request.params and not toolkit.c.user:

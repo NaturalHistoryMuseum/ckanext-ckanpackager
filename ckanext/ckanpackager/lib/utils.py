@@ -192,7 +192,7 @@ def parse_filters(filters):
     '''
     # TODO: is there a CKAN API for this? The format changed with recent versions of CKAN, should we
     #       check for version?
-    result = defaultdict()
+    result = defaultdict(list)
     for f in filters.split(u'|'):
         try:
             name, value = f.split(u':', 1)

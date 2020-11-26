@@ -57,8 +57,7 @@ class CkanPackagerPlugin(SingletonPlugin):
 
         '''
         toolkit.add_template_directory(app_config, u'theme/templates')
-        toolkit.add_public_directory(app_config, u'theme/public')
-        toolkit.add_resource(u'theme/public', u'ckanext-ckanpackager')
+        toolkit.add_resource(u'theme/assets', u'ckanext-ckanpackager')
 
     # IActions
     def get_actions(self):

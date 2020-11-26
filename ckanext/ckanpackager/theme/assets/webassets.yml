@@ -1,0 +1,10 @@
+main-js:
+  output: ckanext-ckanpackager/%(version)s_main.js
+  filters: rjsmin
+  contents:
+    - scripts/modules/ckanpackager-download-link.js
+
+main-css:
+  output: ckanext-ckanpackager/%(version)s_main.css
+  contents:
+    - css/ckanpackager.css

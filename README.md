@@ -80,7 +80,7 @@ Name|Description|Options
 1. Initialise the database table:
 
   ```bash
-  paster --plugin=ckanext-ckanpackager initdb -c $CONFIG_FILE
+  ckan -c $CONFIG_FILE ckanpackager initdb
   ```
 
 # Usage
@@ -109,12 +109,11 @@ toolkit.get_action('packager_stats')(
 ## Commands
 
 ### `initdb`
-Initialises the ckanpackager database table.
+Initialises the ckanpackager database tables.
 
-1.
-    ```bash
-    paster --plugin=ckanext-ckanpackager initdb -c $CONFIG_FILE
-    ```
+  ```bash
+  ckan -c $CONFIG_FILE ckanpackager initdb
+  ```
 
 ## Templates
 

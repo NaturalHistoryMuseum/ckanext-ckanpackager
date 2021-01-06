@@ -4,7 +4,7 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 
-from ckanext.ckanpackager import routes
+from ckanext.ckanpackager import routes, cli
 from ckanext.ckanpackager.lib.helpers import should_show_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
 from ckanext.ckanpackager.logic import action, auth
@@ -20,6 +20,7 @@ class CkanPackagerPlugin(SingletonPlugin):
     implements(interfaces.IActions)
     implements(interfaces.IAuthFunctions)
     implements(interfaces.IBlueprint, inherit=True)
+    implements(interfaces.IClick)
 
     def configure(self, app_cfg):
         '''Implementation of IConfigurable.configure
@@ -31,6 +32,10 @@ class CkanPackagerPlugin(SingletonPlugin):
         #  this.
         app_cfg[u'datastore_api'] = u'%s/api/action' % app_cfg.get(u'ckan.site_url',
                                                                   u'').rstrip('/')
+
+    ## IClick
+    def get_commands(self):
+        return cli.get_commands()
 
     ## IBlueprint
     def get_blueprint(self):

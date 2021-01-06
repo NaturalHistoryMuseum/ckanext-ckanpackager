@@ -37,8 +37,5 @@ setup(
         u'''
         [ckan.plugins]
             ckanpackager=ckanext.ckanpackager.plugin:CkanPackagerPlugin
-
-        [paste.paster_command]
-            initdb=ckanext.ckanpackager.commands.initdb:CKANPackagerCommand
         ''',
     )

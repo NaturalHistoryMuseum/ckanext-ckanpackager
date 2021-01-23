@@ -4,9 +4,10 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 import json
+from collections import defaultdict
+
 import requests
 from ckan.plugins import toolkit
-from collections import defaultdict
 
 from ..logic.action import ALLOWED_PARAMS
 

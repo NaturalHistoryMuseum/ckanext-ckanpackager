@@ -31,8 +31,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'requests>=1.1.0',
-        ],
+        u'requests>=1.1.0',
+    ],
     entry_points= \
         u'''
         [ckan.plugins]

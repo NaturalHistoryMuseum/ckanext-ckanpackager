@@ -16,13 +16,13 @@ def ckanpackager():
     pass
 
 
-@ckanpackager.command(name=u'initdb')
+@ckanpackager.command(name='initdb')
 def init_db():
     '''
     Initialise the ckanpackager tables.
     '''
     if not ckanpackager_stats_table.exists(model.meta.engine):
         ckanpackager_stats_table.create(model.meta.engine)
-        click.secho(u'Created ckanpackager_stats table', fg=u'green')
+        click.secho('Created ckanpackager_stats table', fg='green')
     else:
-        click.secho(u'ckanpackager_stats already exists, skipping init', fg=u'green')
+        click.secho('ckanpackager_stats already exists, skipping init', fg='green')

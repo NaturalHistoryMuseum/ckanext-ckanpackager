@@ -10,8 +10,7 @@ from ckan.plugins import interfaces
 class ICkanPackager(interfaces.Interface):
     ''' '''
 
-    def before_package_request(self, resource_id, package_id, packager_url,
-                               request_params):
+    def before_package_request(self, resource_id, package_id, packager_url, request_params):
         '''Allows modification of the packager url and request parameters right before
         the request is sent to the
         ckanpackager backend. Must return both as a tuple.

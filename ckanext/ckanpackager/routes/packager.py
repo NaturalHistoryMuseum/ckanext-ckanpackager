@@ -42,7 +42,7 @@ def package_resource(package_id, resource_id):
         result = send_packager_request(packager_url, params)
         toolkit.h.flash_success(result.get('message', success_message))
     except PackagerControllerError as e:
-        toolkit.h.flash_error(e.message)
+        toolkit.h.flash_error(str(e))
     else:
         # create new download stats object
         stat = CKANPackagerStat(

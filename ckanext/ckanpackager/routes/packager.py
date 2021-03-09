@@ -15,9 +15,9 @@ from ..model.stat import CKANPackagerStat
 from ..lib.utils import get_redirect_url, validate_request, prepare_packager_parameters, \
     send_packager_request, PackagerControllerError, get_options_from_request
 
-blueprint = Blueprint(name=u'ckanpackager', import_name=__name__)
+blueprint = Blueprint(name='ckanpackager', import_name=__name__)
 
-success_message = u'Request successfully posted. The resource should be emailed to you shortly.'
+success_message = 'Request successfully posted. The resource should be emailed to you shortly.'
 
 
 @blueprint.route('/dataset/<package_id>/resource/<resource_id>/package')
@@ -40,16 +40,16 @@ def package_resource(package_id, resource_id):
                                                                  packager_url, params)
 
         result = send_packager_request(packager_url, params)
-        toolkit.h.flash_success(result.get(u'message', success_message))
+        toolkit.h.flash_success(result.get('message', success_message))
     except PackagerControllerError as e:
-        toolkit.h.flash_error(e.message)
+        toolkit.h.flash_error(str(e))
     else:
         # create new download stats object
         stat = CKANPackagerStat(
-            resource_id=params[u'resource_id'],
+            resource_id=params['resource_id'],
             # TODO: do this in a more robust way? This currently relies on
             #       prepare_packager_parameters adding a limit to the params
-            count=params.get(u'limit', 0),
+            count=params.get('limit', 0),
         )
         Session.add(stat)
         Session.commit()
@@ -66,10 +66,10 @@ def get_stats():
     :return: the JSON returned by the ckanpackager
     '''
     # create the url to post to
-    url = os.path.join(toolkit.config.get(u'ckanpackager.url'), u'statistics', u'requests')
+    url = os.path.join(toolkit.config.get('ckanpackager.url'), 'statistics', 'requests')
     # this is the data we're going to pass in the request, it has to have the secret in it
     data = {
-        u'secret': toolkit.config.get(u'ckanpackager.secret')
+        'secret': toolkit.config.get('ckanpackager.secret')
     }
     # update the data dict with the options from the request parameters
     data.update(get_options_from_request())

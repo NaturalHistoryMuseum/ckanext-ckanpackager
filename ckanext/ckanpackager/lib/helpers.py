@@ -8,12 +8,12 @@ from ckan.plugins import toolkit
 
 
 def should_show_format_options(resource_id):
-    '''Determines whether the format options should be shown for a given resource id.
+    '''
+    Determines whether the format options should be shown for a given resource id.
 
     :param resource_id: the resource's id
     :returns: True if they should be shown, False if not
-
     '''
-    resource = toolkit.get_action(u'resource_show')({}, dict(id=resource_id))
+    resource = toolkit.get_action('resource_show')({}, dict(id=resource_id))
     # currently we just predicate on whether the resource is in the datastore or not
-    return resource.get(u'datastore_active', False)
+    return resource.get('datastore_active', False)

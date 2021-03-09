@@ -6,11 +6,11 @@ from ckan.plugins import toolkit
 # we only allow a certain set of request parameters. These are the ones accepted by the
 # ckanpackager's statistics/requests endpoint, minus the secret
 ALLOWED_PARAMS = {
-    u'offset',
-    u'limit',
-    u'resource_id',
-    u'email'
-    }
+    'offset',
+    'limit',
+    'resource_id',
+    'email'
+}
 
 
 @toolkit.side_effect_free
@@ -41,19 +41,19 @@ def packager_stats(context, data_dict):
     :rtype: list of dicts
     '''
     # check the access is appropriate
-    toolkit.check_access(u'packager_stats', context, data_dict)
+    toolkit.check_access('packager_stats', context, data_dict)
 
     # extract the parameters we're interested in from the allowed ones
     params = {key: value for key, value in data_dict.items() if key in ALLOWED_PARAMS}
     # set some defaults
-    params.setdefault(u'limit', 100)
-    params.setdefault(u'offset', 0)
+    params.setdefault('limit', 100)
+    params.setdefault('offset', 0)
     # create the url to post to
-    url = os.path.join(toolkit.config[u'ckanpackager.url'], u'statistics', u'requests')
+    url = os.path.join(toolkit.config['ckanpackager.url'], 'statistics', 'requests')
     # this is the data we're going to pass in the request, it has to have the secret in it
     data = {
-        u'secret': toolkit.config[u'ckanpackager.secret']
-        }
+        'secret': toolkit.config['ckanpackager.secret']
+    }
     # update the data we're going to send with the allowed options from the data_dict
     data.update(params)
 

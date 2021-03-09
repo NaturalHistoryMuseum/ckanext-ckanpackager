@@ -5,7 +5,8 @@
      bt_text: Text for the button (eg. _('Download'))
 #}
 
-{% resource 'ckanext-ckanpackager/main' %}
+{% asset 'ckanext-ckanpackager/main-css' %}
+{% asset 'ckanext-ckanpackager/main-js' %}
 
 <a data-module="ckanpackager-download-link" class="packager-link btn btn-primary" data-module-resource-id="{{ res.id }}"
    data-module-is-record="false" href="{{ h.url_for_package_resource(pkg.id, res.id) }}">

@@ -4,9 +4,10 @@
 # This file is part of ckanext-ckanpackager
 # Created by the Natural History Museum in London, UK
 import json
+from collections import defaultdict
+
 import requests
 from ckan.plugins import toolkit
-from collections import defaultdict
 
 from ..logic.action import ALLOWED_PARAMS
 
@@ -20,8 +21,8 @@ def is_downloadable_resource(resource_id):
     :raises ckan.plugins.toolkit.ObjectNotFound: if the resource does not exist
     :returns: True or False
     '''
-    resource = toolkit.get_action(u'resource_show')({}, {u'id': resource_id})
-    return resource.get(u'datastore_active', False) or resource.get(u'url', False)
+    resource = toolkit.get_action('resource_show')({}, {'id': resource_id})
+    return resource.get('datastore_active', False) or resource.get('url', False)
 
 
 def url_for_package_resource(package_id, resource_id, use_request=True, extra_filters=None):
@@ -41,26 +42,26 @@ def url_for_package_resource(package_id, resource_id, use_request=True, extra_fi
     else:
         params = {}
 
-    resource = toolkit.get_action(u'resource_show')({}, {u'id': resource_id})
-    if not resource.get(u'datastore_active', False):
-        if resource.get(u'url', False):
-            params[u'resource_url'] = resource.get(u'url')
+    resource = toolkit.get_action('resource_show')({}, {'id': resource_id})
+    if not resource.get('datastore_active', False):
+        if resource.get('url', False):
+            params['resource_url'] = resource.get('url')
         else:
-            return u''
+            return ''
 
     filters = []
-    if u'filters' in params:
-        filters = params[u'filters'].split(u'|')
+    if 'filters' in params:
+        filters = params['filters'].split('|')
     if extra_filters:
-        filters += [u'%s:%s' % (k, v) for (k, v) in extra_filters.items()]
+        filters += [f'{k}:{v}' for k, v in extra_filters.items()]
     if filters:
-        params[u'filters'] = u'|'.join(filters)
+        params['filters'] = '|'.join(filters)
 
-    params[u'resource_id'] = resource_id
-    params[u'package_id'] = package_id
-    params[u'destination'] = toolkit.request.url
+    params['resource_id'] = resource_id
+    params['package_id'] = package_id
+    params['destination'] = toolkit.request.url
 
-    return toolkit.url_for(u'ckanpackager.package_resource', **params)
+    return toolkit.url_for('ckanpackager.package_resource', **params)
 
 
 def get_redirect_url(package_id, resource_id):
@@ -70,10 +71,10 @@ def get_redirect_url(package_id, resource_id):
     :param package_id: the package id
     :param resource_id: the resource id
     '''
-    if u'destination' in toolkit.request.params:
-        return toolkit.request.params[u'destination']
+    if 'destination' in toolkit.request.params:
+        return toolkit.request.params['destination']
     else:
-        return toolkit.url_for(u'dataset.read', id=package_id, resource_id=resource_id)
+        return toolkit.url_for('dataset.read', id=package_id, resource_id=resource_id)
 
 
 def validate_request(resource_id):
@@ -85,13 +86,13 @@ def validate_request(resource_id):
     # validate resource
     try:
         if not is_downloadable_resource(resource_id):
-            raise PackagerControllerError.build(u'This resource cannot be downloaded')
+            raise PackagerControllerError.build('This resource cannot be downloaded')
     except toolkit.ObjectNotFound:
-        raise PackagerControllerError.build(u'Resource not found')
+        raise PackagerControllerError.build('Resource not found')
 
     # check that we have an email address
-    if u'email' not in toolkit.request.params and not toolkit.c.user:
-        raise PackagerControllerError.build(u'An email must be provided or you must be logged in')
+    if 'email' not in toolkit.request.params and not toolkit.c.user:
+        raise PackagerControllerError.build('An email must be provided or you must be logged in')
 
 
 def prepare_packager_parameters(resource_id, params):
@@ -102,54 +103,54 @@ def prepare_packager_parameters(resource_id, params):
     :param params: a dictionary of parameters
     :return: a tuple defining an URL and a dictionary of parameters
     '''
-    resource = toolkit.get_action(u'resource_show')(None, {u'id': resource_id})
-    packager_url = toolkit.config.get(u'ckanpackager.url')
+    resource = toolkit.get_action('resource_show')(None, {'id': resource_id})
+    packager_url = toolkit.config.get('ckanpackager.url')
     request_params = {
-        u'secret': toolkit.config.get(u'ckanpackager.secret'),
-        u'resource_id': resource_id,
+        'secret': toolkit.config.get('ckanpackager.secret'),
+        'resource_id': resource_id,
         # the request has been validated which means there's either an email param or a user
         # available. We prioritise the email param.
-        u'email': toolkit.request.params.get(u'email', getattr(toolkit.c.userobj, u'email', None)),
+        'email': toolkit.request.params.get('email', getattr(toolkit.c.userobj, 'email', None)),
         # default to csv format, this can be overridden in the params
-        u'format': u'csv',
+        'format': 'csv',
     }
 
-    if resource.get(u'datastore_active', False):
+    if resource.get('datastore_active', False):
         # dwc resources get special treatment
-        if resource.get(u'format', u'').lower() == u'dwc':
-            packager_url += u'/package_dwc_archive'
+        if resource.get('format', '').lower() == 'dwc':
+            packager_url += '/package_dwc_archive'
         else:
-            packager_url += u'/package_datastore'
+            packager_url += '/package_datastore'
 
-        request_params[u'api_url'] = toolkit.config[u'datastore_api'] + u'/datastore_search'
+        request_params['api_url'] = f'{toolkit.config["datastore_api"]}/datastore_search'
 
         # process a list of options we allow
-        for option in [u'filters', u'q', u'limit', u'offset', u'resource_url', u'sort', u'format']:
+        for option in ['filters', 'q', 'limit', 'offset', 'resource_url', 'sort', 'format']:
             if option in params:
-                if option == u'filters':
-                    request_params[u'filters'] = json.dumps(parse_filters(params[u'filters']))
+                if option == 'filters':
+                    request_params['filters'] = json.dumps(parse_filters(params['filters']))
                 else:
                     request_params[option] = params[option]
 
-        if u'limit' not in request_params:
+        if 'limit' not in request_params:
             # it's best to actually add a limit, so the packager knows how to prioritize the
             # request. This is also used by the calling route which creates a stats object off the
             # back of this limit
             prep_req = {
                 # TODO: pretty sure it does return a total but needs checking...
-                u'limit': 1,  # using 0 does not return the total
-                u'resource_id': request_params[u'resource_id']
+                'limit': 1,  # using 0 does not return the total
+                'resource_id': request_params['resource_id']
             }
-            if u'filters' in request_params:
-                prep_req[u'filters'] = request_params[u'filters']
-            if u'q' in request_params:
-                prep_req[u'q'] = request_params[u'q']
+            if 'filters' in request_params:
+                prep_req['filters'] = request_params['filters']
+            if 'q' in request_params:
+                prep_req['q'] = request_params['q']
             # run the datastore_search action to get the total
-            result = toolkit.get_action(u'datastore_search')({}, prep_req)
-            request_params[u'limit'] = result[u'total'] - request_params.get(u'offset', 0)
-    elif resource.get(u'url', False):
+            result = toolkit.get_action('datastore_search')({}, prep_req)
+            request_params['limit'] = result['total'] - request_params.get('offset', 0)
+    elif resource.get('url', False):
         packager_url += '/package_url'
-        request_params[u'resource_url'] = resource.get(u'url')
+        request_params['resource_url'] = resource.get('url')
 
     return packager_url, request_params
 
@@ -165,12 +166,12 @@ def send_packager_request(packager_url, params):
         r = requests.post(packager_url, params)
         r.raise_for_status()
     except Exception:
-        raise PackagerControllerError.build(u'Failed to contact the ckanpackager service')
+        raise PackagerControllerError.build('Failed to contact the ckanpackager service')
 
     try:
         return r.json()
     except Exception:
-        raise PackagerControllerError.build(u'Could not parse response from ckanpackager service')
+        raise PackagerControllerError.build('Could not parse response from ckanpackager service')
 
 
 def parse_filters(filters):
@@ -183,9 +184,9 @@ def parse_filters(filters):
     # TODO: is there a CKAN API for this? The format changed with recent versions of CKAN, should we
     #       check for version?
     result = defaultdict(list)
-    for f in filters.split(u'|'):
+    for f in filters.split('|'):
         try:
-            name, value = f.split(u':', 1)
+            name, value = f.split(':', 1)
             result[name].append(value)
         except ValueError:
             pass
@@ -201,8 +202,8 @@ def get_options_from_request():
     # we'll fill out the extra parameters using the query string parameters, however we want to
     # filter to ensure we only pass parameters we want to allow
     params = {key: value for key, value in toolkit.request.params.items() if key in ALLOWED_PARAMS}
-    params.setdefault(u'limit', 100)
-    params.setdefault(u'offset', 0)
+    params.setdefault('limit', 100)
+    params.setdefault('offset', 0)
     return params
 
 

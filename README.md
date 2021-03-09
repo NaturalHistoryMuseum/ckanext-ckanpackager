@@ -4,7 +4,8 @@
 
 [![Travis](https://img.shields.io/travis/NaturalHistoryMuseum/ckanext-ckanpackager/master.svg?style=flat-square)](https://travis-ci.org/NaturalHistoryMuseum/ckanext-ckanpackager)
 [![Coveralls](https://img.shields.io/coveralls/github/NaturalHistoryMuseum/ckanext-ckanpackager/master.svg?style=flat-square)](https://coveralls.io/github/NaturalHistoryMuseum/ckanext-ckanpackager)
-[![CKAN](https://img.shields.io/badge/ckan-2.9.0a-orange.svg?style=flat-square)](https://github.com/ckan/ckan)
+[![CKAN](https://img.shields.io/badge/ckan-2.9.1-orange.svg?style=flat-square)](https://github.com/ckan/ckan)
+[![Python](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue.svg?style=flat-square)](https://www.python.org/)
 
 _A CKAN extension that provides a user interface to download resources with [ckanpackager](http://github.com/NaturalHistoryMuseum/ckanpackager)._
 
@@ -80,7 +81,7 @@ Name|Description|Options
 1. Initialise the database table:
 
   ```bash
-  paster --plugin=ckanext-ckanpackager initdb -c $CONFIG_FILE
+  ckan -c $CONFIG_FILE ckanpackager initdb
   ```
 
 # Usage
@@ -109,12 +110,11 @@ toolkit.get_action('packager_stats')(
 ## Commands
 
 ### `initdb`
-Initialises the ckanpackager database table.
+Initialises the ckanpackager database tables.
 
-1.
-    ```bash
-    paster --plugin=ckanext-ckanpackager initdb -c $CONFIG_FILE
-    ```
+  ```bash
+  ckan -c $CONFIG_FILE ckanpackager initdb
+  ```
 
 ## Templates
 
@@ -128,10 +128,24 @@ Add the following snippet to templates where you want the button to appear:
 
 
 # Testing
-
 _Test coverage is currently extremely limited._
 
-To run the tests, use nosetests inside your virtualenv. The `--nocapture` flag will allow you to see the debug statements.
+To run the tests in this extension, there is a Docker compose configuration available in this
+repository to make it easy.
+
+To run the tests against ckan 2.9.x on Python3:
+
+1. Build the required images
 ```bash
-nosetests --ckan --with-pylons=$TEST_CONFIG_FILE --where=$INSTALL_FOLDER/src/ckanext-ckanpackager --nologcapture --nocapture
+docker-compose build
 ```
+
+2. Then run the tests.
+   The root of the repository is mounted into the ckan container as a volume by the Docker compose
+   configuration, so you should only need to rebuild the ckan image if you change the extension's
+   dependencies.
+```bash
+docker-compose run ckan
+```
+
+The ckan image uses the Dockerfile in the `docker/` folder which is based on `openknowledge/ckan-dev:2.9-py2`.

@@ -7,7 +7,7 @@
 from ckan.plugins import SingletonPlugin, implements, interfaces, toolkit
 
 from ckanext.ckanpackager import routes, cli
-from ckanext.ckanpackager.lib.helpers import should_show_format_options
+from ckanext.ckanpackager.lib.helpers import get_format_options
 from ckanext.ckanpackager.lib.utils import url_for_package_resource
 from ckanext.ckanpackager.logic import action, auth
 
@@ -43,7 +43,7 @@ class CkanPackagerPlugin(SingletonPlugin):
     def get_helpers(self):
         return {
             'url_for_package_resource': url_for_package_resource,
-            'should_show_format_options': should_show_format_options
+            'get_format_options': get_format_options
         }
 
     # IConfigurer

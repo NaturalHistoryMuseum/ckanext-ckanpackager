@@ -28,18 +28,18 @@
                     <br />
                 </div>
 
-                {% if h.should_show_format_options(resource_id) %}
+                {% set formats = h.get_format_options(resource_id) %}
+                {% if formats %}
                 <div class="options">
                     {{ _('Format') }}:<br />
-                    <label for="{{ resource_id }}-csv">
-                        <input id="{{ resource_id }}-csv" type="radio" name="format" value="csv"
-                               checked="checked"/>
-                        {{ _('CSV') }}
-                    </label>
-                    <label for="{{ resource_id }}-tsv">
-                        <input id="{{ resource_id }}-tsv" type="radio" name="format" value="tsv"/>
-                        {{ _('TSV') }}
-                    </label>
+                    {% for format in formats %}
+                        <label for="{{ resource_id }}-{{ format }}">
+                            <input id="{{ resource_id }}-{{ format }}" type="radio" name="format"
+                                   value="{{ format | lower}}"
+                                   {% if loop.first %}checked="checked" {% endif %}/>
+                            {{ format }}
+                        </label>
+                    {% endfor %}
                     <br />
                 </div>
                 {% endif %}

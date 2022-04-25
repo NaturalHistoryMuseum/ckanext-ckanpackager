@@ -339,10 +339,10 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
                     }
                 }
             }
-            if (self.$form.find('input[name=format]:checked').val() === 'tsv') {
-                self.link_parts['qs']['format'] = ['tsv'];
-            } else {
-                self.link_parts['qs']['format'] = ['csv'];
+
+            const format_option = self.$form.find('input[name=format]:checked');
+            if (format_option.length) {
+                self.link_parts['qs']['format'] = [format_option.val()];
             }
 
             var send_url = self.link_parts['path'];

@@ -115,6 +115,11 @@ def prepare_packager_parameters(resource_id, params):
         'format': 'csv',
     }
 
+    # if there is a logged-in user, send over their apikey so that the packager can access resources
+    # that require authentication (i.e. ones in private datasets)
+    if toolkit.c.userobj and toolkit.c.userobj.apikey:
+        request_params['key'] = toolkit.c.userobj.apikey
+
     if resource.get('datastore_active', False):
         # dwc resources get special treatment
         if resource.get('format', '').lower() == 'dwc':

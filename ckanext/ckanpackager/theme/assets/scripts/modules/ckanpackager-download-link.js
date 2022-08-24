@@ -242,18 +242,19 @@ this.ckan.module('ckanpackager-download-link', function(jQuery, _) {
                 var $total = $('div.recline-record-count span.count', $controls);
                 if ($grid.length === 1 && $grid.get(0).grid && $from.length === 1 && $total.length === 1) {
                     var grid = $grid.get(0).grid;
-                    var total = parseInt($total.html());
+                    // this number is comma delimited, so we can just use it as is
+                    var total = $total.html();
                     var from = parseInt($from.val());
                     var count = grid.getDataLength();
                     var sort = [];
                     $.each(grid.getSortColumns(), function(i, c) {
                         sort.push(c.columnId + (c.sortAsc ? ' ASC' : ' DESC'));
                     });
-                    if (!isNaN(from) && !isNaN(count) && !isNaN(total)) {
+                    if (!isNaN(from) && !isNaN(count) && !!total) {
                         self.offset = from - 1;
                         self.limit = count;
                         self.sort = sort.join(',');
-                        totalRecordsText = total.toLocaleString();
+                        totalRecordsText = total;
                         // break out of the loop as we've found the iframe with the grid
                         return false;
                     }

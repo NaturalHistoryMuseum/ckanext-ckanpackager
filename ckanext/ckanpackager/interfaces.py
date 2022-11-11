@@ -8,12 +8,16 @@ from ckan.plugins import interfaces
 
 
 class ICkanPackager(interfaces.Interface):
-    ''' '''
+    """
+    
+    """
 
-    def before_package_request(self, resource_id, package_id, packager_url, request_params):
-        '''Allows modification of the packager url and request parameters right before
-        the request is sent to the
-        ckanpackager backend. Must return both as a tuple.
+    def before_package_request(
+        self, resource_id, package_id, packager_url, request_params
+    ):
+        """
+        Allows modification of the packager url and request parameters right before the
+        request is sent to the ckanpackager backend. Must return both as a tuple.
 
         :param resource_id: the resource id of the resource that is about to be packaged
         :param package_id: the package id of the resource that is about to be packaged
@@ -21,6 +25,5 @@ class ICkanPackager(interfaces.Interface):
         :param request_params: the request parameters that will be sent to the
         ckanpackager
         :returns: a tuple of the url and the params
-
-        '''
+        """
         return packager_url, request_params

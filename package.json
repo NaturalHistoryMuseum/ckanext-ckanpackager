@@ -7,7 +7,7 @@
     "url": "git+https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager/issues"
   },

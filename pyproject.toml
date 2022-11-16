@@ -36,7 +36,7 @@ repository = "https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager"
 changelog = "https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager/blob/main/CHANGELOG.md"
 
 [project.entry-points."ckan.plugins"]
-ckanpackager = "ckanext.ckanpackager.plugin:CkanpackagerPlugin"
+ckanpackager = "ckanext.ckanpackager.plugin:CkanPackagerPlugin"
 
 
 [build-system]

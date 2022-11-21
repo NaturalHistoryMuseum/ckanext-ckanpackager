@@ -1,3 +1,4 @@
+<!--header-start-->
 <img src=".github/nhm-logo.svg" align="left" width="150px" height="100px" hspace="40"/>
 
 # ckanext-ckanpackager
@@ -10,9 +11,11 @@
 
 _A CKAN extension that provides a user interface to download resources with [ckanpackager](http://github.com/NaturalHistoryMuseum/ckanpackager)._
 
+<!--header-end-->
 
 # Overview
 
+<!--overview-start-->
 **This extension will not work without [ckanpackager](http://github.com/NaturalHistoryMuseum/ckanpackager).**
 
 Ckanpackager is a stand-alone service that can be instructed to fetch data on a [CKAN](http://ckan.org) site using the datastore API, pack the data in a ZIP file and email the link to a given address. See the [ckanpackager github page](http://github.com/NaturalHistoryMuseum/ckanpackager) for more information.
@@ -23,10 +26,11 @@ The extension provides an HTML snippet that can be used to replace the Download 
 - On resource pages, the button will ensure that currently applied filters and searches are forwarded on to the ckanpackager service.
 
 This extension uses a database table in the CKAN database to store stats about packaging events.
-
+<!--overview-end-->
 
 # Installation
 
+<!--installation-start-->
 Path variables used below:
 - `$INSTALL_FOLDER` (i.e. where CKAN is installed), e.g. `/usr/lib/ckan/default`
 - `$CONFIG_FILE`, e.g. `/etc/ckan/default/development.ini`
@@ -64,9 +68,17 @@ Path variables used below:
   ckan.plugins = ... ckanpackager
   ```
 
+6. Initialise the database table:
+
+  ```bash
+  ckan -c $CONFIG_FILE ckanpackager initdb
+  ```
+
+<!--installation-end-->
 
 # Configuration
 
+<!--configuration-start-->
 There are two options that _must_ be specified in your .ini config file.
 
 ## **[REQUIRED]**
@@ -75,18 +87,11 @@ Name|Description|Options
 --|--|--
 `ckanpackager.url`|URL to the ckanpackager endpoint|
 `ckanpackager.secret`|Shared secret with the ckanpackager instance|
-
-
-# Further Steps
-
-1. Initialise the database table:
-
-  ```bash
-  ckan -c $CONFIG_FILE ckanpackager initdb
-  ```
+<!--configuration-end-->
 
 # Usage
 
+<!--usage-start-->
 ## Actions
 
 ### `packager_stats`
@@ -126,10 +131,11 @@ Add the following snippet to templates where you want the button to appear:
    res=res, pkg=pkg, bt_class="fas fa-download", bt_text=_('Download')
 %}
 ```
-
+<!--usage-end-->
 
 # Testing
 
+<!--testing-start-->
 There is a Docker compose configuration available in this repository to make it easier to run tests.
 
 To run the tests against ckan 2.9.x on Python3:
@@ -148,3 +154,4 @@ docker-compose run ckan
 ```
 
 The ckan image uses the Dockerfile in the `docker/` folder.
+<!--testing-end-->

@@ -25,10 +25,12 @@ def is_downloadable_resource(resource_id):
     return resource.get('datastore_active', False) or resource.get('url', False)
 
 
-def url_for_package_resource(package_id, resource_id, use_request=True, extra_filters=None):
-    '''
-    Given a resource_id, return the URL for packaging that resource. Will return an empty URL if the
-    resource exists but is not downloadable.
+def url_for_package_resource(
+    package_id, resource_id, use_request=True, extra_filters=None
+):
+    """
+    Given a resource_id, return the URL for packaging that resource. Will return an
+    empty URL if the resource exists but is not downloadable.
 
     :param package_id: the package id
     :param resource_id: the resource id
@@ -36,7 +38,7 @@ def url_for_package_resource(package_id, resource_id, use_request=True, extra_fi
     :param extra_filters: extra filters (on top of those in the request URL) to add to the link
     :raises ckan.plugins.toolkit.ObjectNotFound: if the resource does not exist
     :return: the URL to request packaging the resource
-    '''
+    """
     if use_request:
         params = dict(toolkit.request.view_args)
     else:
@@ -65,12 +67,12 @@ def url_for_package_resource(package_id, resource_id, use_request=True, extra_fi
 
 
 def get_redirect_url(package_id, resource_id):
-    '''
+    """
     Determine the URL to redirect the requester to after making the packager request.
 
     :param package_id: the package id
     :param resource_id: the resource id
-    '''
+    """
     if 'destination' in toolkit.request.params:
         return toolkit.request.params['destination']
     else:
@@ -78,11 +80,11 @@ def get_redirect_url(package_id, resource_id):
 
 
 def validate_request(resource_id):
-    '''
+    """
     Validate the current request, and raise exceptions on errors.
 
     :param resource_id: the resource id
-    '''
+    """
     # validate resource
     try:
         if not is_downloadable_resource(resource_id):
@@ -92,17 +94,19 @@ def validate_request(resource_id):
 
     # check that we have an email address
     if 'email' not in toolkit.request.params and not toolkit.c.user:
-        raise PackagerControllerError.build('An email must be provided or you must be logged in')
+        raise PackagerControllerError.build(
+            'An email must be provided or you must be logged in'
+        )
 
 
 def prepare_packager_parameters(resource_id, params):
-    '''
+    """
     Prepare the URL and parameters for the ckanpackager service from the params.
 
     :param resource_id: the resource id
     :param params: a dictionary of parameters
     :return: a tuple defining an URL and a dictionary of parameters
-    '''
+    """
     resource = toolkit.get_action('resource_show')(None, {'id': resource_id})
     packager_url = toolkit.config.get('ckanpackager.url')
     request_params = {
@@ -110,7 +114,9 @@ def prepare_packager_parameters(resource_id, params):
         'resource_id': resource_id,
         # the request has been validated which means there's either an email param or a user
         # available. We prioritise the email param.
-        'email': toolkit.request.params.get('email', getattr(toolkit.c.userobj, 'email', None)),
+        'email': toolkit.request.params.get(
+            'email', getattr(toolkit.c.userobj, 'email', None)
+        ),
         # default to csv format, this can be overridden in the params
         'format': 'csv',
     }
@@ -127,13 +133,25 @@ def prepare_packager_parameters(resource_id, params):
         else:
             packager_url += '/package_datastore'
 
-        request_params['api_url'] = f'{toolkit.config["datastore_api"]}/datastore_search'
+        request_params[
+            'api_url'
+        ] = f'{toolkit.config["datastore_api"]}/datastore_search'
 
         # process a list of options we allow
-        for option in ['filters', 'q', 'limit', 'offset', 'resource_url', 'sort', 'format']:
+        for option in [
+            'filters',
+            'q',
+            'limit',
+            'offset',
+            'resource_url',
+            'sort',
+            'format',
+        ]:
             if option in params:
                 if option == 'filters':
-                    request_params['filters'] = json.dumps(parse_filters(params['filters']))
+                    request_params['filters'] = json.dumps(
+                        parse_filters(params['filters'])
+                    )
                 else:
                     request_params[option] = params[option]
 
@@ -144,7 +162,7 @@ def prepare_packager_parameters(resource_id, params):
             prep_req = {
                 # TODO: pretty sure it does return a total but needs checking...
                 'limit': 1,  # using 0 does not return the total
-                'resource_id': request_params['resource_id']
+                'resource_id': request_params['resource_id'],
             }
             if 'filters' in request_params:
                 prep_req['filters'] = request_params['filters']
@@ -161,31 +179,35 @@ def prepare_packager_parameters(resource_id, params):
 
 
 def send_packager_request(packager_url, params):
-    '''
+    """
     Send the request to the ckanpackager service.
 
     :param packager_url: the ckanpackager service URL
     :param params: the parameters to send
-    '''
+    """
     try:
         r = requests.post(packager_url, params)
         r.raise_for_status()
     except Exception:
-        raise PackagerControllerError.build('Failed to contact the ckanpackager service')
+        raise PackagerControllerError.build(
+            'Failed to contact the ckanpackager service'
+        )
 
     try:
         return r.json()
     except Exception:
-        raise PackagerControllerError.build('Could not parse response from ckanpackager service')
+        raise PackagerControllerError.build(
+            'Could not parse response from ckanpackager service'
+        )
 
 
 def parse_filters(filters):
-    '''
+    """
     Parse datastore URL filters into JSON dictionary.
 
     :param filters: String describing the filters
     :return: Dictionary of name to list of values
-    '''
+    """
     # TODO: is there a CKAN API for this? The format changed with recent versions of CKAN, should we
     #       check for version?
     result = defaultdict(list)
@@ -199,14 +221,19 @@ def parse_filters(filters):
 
 
 def get_options_from_request():
-    '''
-    Filters the request parameters passed, sets defaults for offset and limit and returns as a dict.
+    """
+    Filters the request parameters passed, sets defaults for offset and limit and
+    returns as a dict.
 
     :return: a dict of options
-    '''
+    """
     # we'll fill out the extra parameters using the query string parameters, however we want to
     # filter to ensure we only pass parameters we want to allow
-    params = {key: value for key, value in toolkit.request.params.items() if key in ALLOWED_PARAMS}
+    params = {
+        key: value
+        for key, value in toolkit.request.params.items()
+        if key in ALLOWED_PARAMS
+    }
     params.setdefault('limit', 100)
     params.setdefault('offset', 0)
     return params

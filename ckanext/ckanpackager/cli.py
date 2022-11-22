@@ -10,17 +10,17 @@ def get_commands():
 
 @click.group()
 def ckanpackager():
-    '''
+    """
     The CKAN Packager CLI.
-    '''
+    """
     pass
 
 
 @ckanpackager.command(name='initdb')
 def init_db():
-    '''
+    """
     Initialise the ckanpackager tables.
-    '''
+    """
     if not ckanpackager_stats_table.exists(model.meta.engine):
         ckanpackager_stats_table.create(model.meta.engine)
         click.secho('Created ckanpackager_stats table', fg='green')

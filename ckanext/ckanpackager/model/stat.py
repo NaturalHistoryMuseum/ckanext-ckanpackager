@@ -18,9 +18,10 @@ ckanpackager_stats_table = Table(
 
 
 class CKANPackagerStat(DomainObject):
-    '''
+    """
     Object for a datastore download row.
-    '''
+    """
+
     pass
 
 

@@ -1,18 +1,9 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-*.egg-info/
-*.egg
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-.idea
+*.egg-info
+*.pyc
+.noseids
+.pytest_cache
 .coverage
+build/
+dist/
+.idea
+**/node_modules/

@@ -1,6 +1,6 @@
 {
   "name": "ckanext-ckanpackager",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "A CKAN extension that provides a user interface to download resources with ckanpackager.",
   "repository": {
     "type": "git",

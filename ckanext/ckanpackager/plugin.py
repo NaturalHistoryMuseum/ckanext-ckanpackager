@@ -22,11 +22,11 @@ class CkanPackagerPlugin(SingletonPlugin):
     implements(interfaces.IClick)
 
     def configure(self, app_cfg):
-        '''
-        Implementation of IConfigurable.configure
+        """
+        Implementation of IConfigurable.configure.
 
         :param app_cfg: config dictionary
-        '''
+        """
         # As per ckan.controllers.packager.resource_read - there is no API for getting this
         site_url = app_cfg.get('ckan.site_url', '').rstrip('/')
         app_cfg['datastore_api'] = f'{site_url}/api/action'
@@ -43,16 +43,16 @@ class CkanPackagerPlugin(SingletonPlugin):
     def get_helpers(self):
         return {
             'url_for_package_resource': url_for_package_resource,
-            'get_format_options': get_format_options
+            'get_format_options': get_format_options,
         }
 
     # IConfigurer
     def update_config(self, app_config):
-        '''
-        Add our template directory
+        """
+        Add our template directory.
 
         :param app_config:
-        '''
+        """
         toolkit.add_template_directory(app_config, 'theme/templates')
         toolkit.add_resource('theme/assets', 'ckanext-ckanpackager')
 

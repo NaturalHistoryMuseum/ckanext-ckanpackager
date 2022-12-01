@@ -26,6 +26,7 @@ The extension provides an HTML snippet that can be used to replace the Download 
 - On resource pages, the button will ensure that currently applied filters and searches are forwarded on to the ckanpackager service.
 
 This extension uses a database table in the CKAN database to store stats about packaging events.
+
 <!--overview-end-->
 
 # Installation
@@ -35,44 +36,45 @@ Path variables used below:
 - `$INSTALL_FOLDER` (i.e. where CKAN is installed), e.g. `/usr/lib/ckan/default`
 - `$CONFIG_FILE`, e.g. `/etc/ckan/default/development.ini`
 
-1. Clone the repository into the `src` folder:
+## Installing from PyPI
 
-  ```bash
-  cd $INSTALL_FOLDER/src
-  git clone https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager.git
-  ```
+```shell
+pip install ckanext-ckanpackager
+```
+
+## Installing from source
+
+1. Clone the repository into the `src` folder:
+   ```shell
+   cd $INSTALL_FOLDER/src
+   git clone https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager.git
+   ```
 
 2. Activate the virtual env:
+   ```shell
+   . $INSTALL_FOLDER/bin/activate
+   ```
 
-  ```bash
-  . $INSTALL_FOLDER/bin/activate
-  ```
+3. Install via pip:
+   ```shell
+   pip install $INSTALL_FOLDER/src/ckanext-ckanpackager
+   ```
 
-3. Install the requirements from requirements.txt:
+### Installing in editable mode
 
-  ```bash
-  cd $INSTALL_FOLDER/src/ckanext-ckanpackager
-  pip install -r requirements.txt
-  ```
+Installing from a `pyproject.toml` in editable mode (i.e. `pip install -e`) requires `setuptools>=64`; however, CKAN 2.9 requires `setuptools==44.1.0`. See [our CKAN fork](https://github.com/NaturalHistoryMuseum/ckan) for a version of v2.9 that uses an updated setuptools if this functionality is something you need.
 
-4. Run setup.py:
+## Post-install setup
 
-  ```bash
-  cd $INSTALL_FOLDER/src/ckanext-ckanpackager
-  python setup.py develop
-  ```
+1. Add 'ckanpackager' to the list of plugins in your `$CONFIG_FILE`:
+   ```ini
+   ckan.plugins = ... ckanpackager
+   ```
 
-5. Add 'ckanpackager' to the list of plugins in your `$CONFIG_FILE`:
-
-  ```ini
-  ckan.plugins = ... ckanpackager
-  ```
-
-6. Initialise the database table:
-
-  ```bash
-  ckan -c $CONFIG_FILE ckanpackager initdb
-  ```
+2. Initialise the database table:
+   ```shell
+   ckan -c $CONFIG_FILE ckanpackager initdb
+   ```
 
 <!--installation-end-->
 
@@ -87,6 +89,7 @@ Name|Description|Options
 --|--|--
 `ckanpackager.url`|URL to the ckanpackager endpoint|
 `ckanpackager.secret`|Shared secret with the ckanpackager instance|
+
 <!--configuration-end-->
 
 # Usage
@@ -131,6 +134,7 @@ Add the following snippet to templates where you want the button to appear:
    res=res, pkg=pkg, bt_class="fas fa-download", bt_text=_('Download')
 %}
 ```
+
 <!--usage-end-->
 
 # Testing
@@ -154,4 +158,5 @@ docker-compose run ckan
 ```
 
 The ckan image uses the Dockerfile in the `docker/` folder.
+
 <!--testing-end-->

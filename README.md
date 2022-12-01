@@ -85,10 +85,10 @@ There are two options that _must_ be specified in your .ini config file.
 
 ## **[REQUIRED]**
 
-Name|Description|Options
---|--|--
-`ckanpackager.url`|URL to the ckanpackager endpoint|
-`ckanpackager.secret`|Shared secret with the ckanpackager instance|
+| Name                  | Description                                  | Options |
+|-----------------------|----------------------------------------------|---------|
+| `ckanpackager.url`    | URL to the ckanpackager endpoint             |         |
+| `ckanpackager.secret` | Shared secret with the ckanpackager instance |         |
 
 <!--configuration-end-->
 

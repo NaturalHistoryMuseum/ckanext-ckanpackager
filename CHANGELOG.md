@@ -1,5 +1,24 @@
 # Changelog
 
+## v2.2.2 (2022-12-12)
+
+### Fix
+
+- join urls with forward slashes
+
+### Docs
+
+- **readme**: add instruction to install lessc globally
+
+### Style
+
+- change quotes in setup.py to single quotes
+
+### Build System(s)
+
+- remove local installation of less
+- add package data
+
 ## v2.2.1 (2022-12-01)
 
 ### Docs

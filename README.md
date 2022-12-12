@@ -71,7 +71,12 @@ Installing from a `pyproject.toml` in editable mode (i.e. `pip install -e`) requ
    ckan.plugins = ... ckanpackager
    ```
 
-2. Initialise the database table:
+2. Install `lessc` globally:
+   ```shell
+   npm install -g "less@~4.1"
+   ```
+
+3. Initialise the database table:
    ```shell
    ckan -c $CONFIG_FILE ckanpackager initdb
    ```

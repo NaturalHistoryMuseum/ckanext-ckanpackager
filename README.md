@@ -3,13 +3,13 @@
 
 # ckanext-ckanpackager
 
-[![Tests](https://img.shields.io/github/workflow/status/NaturalHistoryMuseum/ckanext-ckanpackager/Tests?style=flat-square)](https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager/actions/workflows/main.yml)
+[![Tests](https://img.shields.io/github/actions/workflow/status/NaturalHistoryMuseum/ckanext-ckanpackager/main.yml?style=flat-square)](https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager/actions/workflows/main.yml)
 [![Coveralls](https://img.shields.io/coveralls/github/NaturalHistoryMuseum/ckanext-ckanpackager/main?style=flat-square)](https://coveralls.io/github/NaturalHistoryMuseum/ckanext-ckanpackager)
 [![CKAN](https://img.shields.io/badge/ckan-2.9.7-orange.svg?style=flat-square)](https://github.com/ckan/ckan)
 [![Python](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue.svg?style=flat-square)](https://www.python.org/)
 [![Docs](https://img.shields.io/readthedocs/ckanext-ckanpackager?style=flat-square)](https://ckanext-ckanpackager.readthedocs.io)
 
-_A CKAN extension that provides a user interface to download resources with [ckanpackager](http://github.com/NaturalHistoryMuseum/ckanpackager)._
+_A CKAN extension that provides a user interface to download resources with ckanpackager._
 
 <!--header-end-->
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## v2.2.6 (2023-02-20)
+
+### Docs
+
+- fix api docs generation script
+
+### Style
+
+- reformat with prettier
+
+### Chores/Misc
+
+- small fixes to align with other extensions
+
 ## v2.2.5 (2023-01-31)
 
 ### Docs

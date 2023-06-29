@@ -1,5 +1,11 @@
 # Changelog
 
+## v2.2.8 (2023-06-29)
+
+### Fix
+
+- use iterables in url join
+
 ## v2.2.7 (2023-04-11)
 
 ### Build System(s)

@@ -1,6 +1,6 @@
 <!--notices-start-->
 > **Warning**
-> ## Version 3 of ckanext-ckanpackager will remove support for ckanpackager.
+> ## Version 3 of ckanext-ckanpackager removes support for ckanpackager.
 >
 > [ckanpackager](http://github.com/NaturalHistoryMuseum/ckanpackager) is being deprecated, and so v3 of this extension will no longer support connecting to it.
 >

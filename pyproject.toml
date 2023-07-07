@@ -50,9 +50,6 @@ zip-safe = false
 [tool.setuptools.packages.find]
 exclude = ["tests", "docs"]
 
-[tool.setuptools.package-data]
-"ckanext.ckanpackager.theme" = ["*", "**/*"]
-
 [tool.commitizen]
 name = "cz_nhm"
 version = "2.2.8"

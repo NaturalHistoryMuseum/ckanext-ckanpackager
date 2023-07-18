@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.0.0 (2023-07-18)
+
+### Breaking Changes
+
+- remove all functionality except database tables
+
+### Refactor
+
+- remove all functionality except database tables
+
+### Docs
+
+- clarify wording in deprecation notice
+
+### Chores/Misc
+
+- remove package data section from pyproject
+
 ## v2.2.9 (2023-07-17)
 
 ### Docs

@@ -11,7 +11,7 @@
 <!--notices-end-->
 
 <!--header-start-->
-<img src="https://github.com/NaturalHistoryMuseum/ckanext-ckanpackager/raw/main/.github/nhm-logo.svg" align="left" width="150px" height="100px" hspace="40"/>
+<img src="https://data.nhm.ac.uk/images/nhm_logo.svg" align="left" width="150px" height="100px" hspace="40"/>
 
 # ckanext-ckanpackager
 
